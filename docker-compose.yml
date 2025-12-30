@@ -1,0 +1,364 @@
+volumes:
+    redis-stack-data:
+        driver: local
+        name: redis-stack-data
+    mailpit-data:
+        driver: local
+        name: mailpit-data
+    rabbitmq-data:
+        driver: local
+        name: rabbitmq-data
+    jaeger-data:
+        driver: local
+        name: jaeger-data
+    consul-data:
+        driver: local
+        name: consul-data
+    mongo-data:
+        driver: local
+        name: mongo-data
+
+services:
+    gateway-service:
+        build:
+            context: .
+            dockerfile: ./compose/gateway.dockerfile
+        image: gateway-service:latest
+        container_name: gateway-service
+        volumes:
+            - .:/app
+        env_file:
+            - ./.envs/gateway/.env
+        ports:
+            - 8080:8080
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080/api/v1/ping"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        depends_on:
+            auth-service:
+                condition: service_healthy
+            mailer-service:
+                condition: service_healthy
+            product-service:
+                condition: service_healthy
+            inventory-service:
+                condition: service_healthy
+            redis-stack-service:
+                condition: service_healthy
+            rabbitmq-service:
+                condition: service_healthy
+            jaeger-service:
+                condition: service_healthy
+            consul-service:
+                condition: service_healthy
+
+    order-service:
+        build:
+            context: .
+            dockerfile: ./compose/order.dockerfile
+        image: order-service:latest
+        container_name: order-service
+        volumes:
+            - .:/app
+        env_file:
+            - ./.envs/order/.env
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50051"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        depends_on:
+            product-service:
+                condition: service_healthy
+            inventory-service:
+                condition: service_healthy
+            rabbitmq-service:
+                condition: service_healthy
+            jaeger-service:
+                condition: service_healthy
+            consul-service:
+                condition: service_healthy
+            mongo-service:
+                condition: service_healthy
+
+    inventory-service:
+        build:
+            context: .
+            dockerfile: ./compose/inventory.dockerfile
+        image: inventory-service:latest
+        container_name: inventory-service
+        volumes:
+            - .:/app
+        env_file:
+            - ./.envs/inventory/.env
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50051"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        depends_on:
+            auth-service:
+                condition: service_healthy
+            rabbitmq-service:
+                condition: service_healthy
+            jaeger-service:
+                condition: service_healthy
+            consul-service:
+                condition: service_healthy
+            mongo-service:
+                condition: service_healthy
+
+    payment-service:
+        build:
+            context: .
+            dockerfile: ./compose/payment.dockerfile
+        image: payment-service:latest
+        container_name: payment-service
+        volumes:
+            - .:/app
+        env_file:
+            - ./.envs/payment/.env
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50052"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        depends_on:
+            auth-service:
+                condition: service_healthy
+            product-service:
+                condition: service_healthy
+            order-service:
+                condition: service_healthy
+            mailpit-service:
+                condition: service_healthy
+            rabbitmq-service:
+                condition: service_healthy
+            jaeger-service:
+                condition: service_healthy
+            consul-service:
+                condition: service_healthy
+
+    product-service:
+        build:
+            context: .
+            dockerfile: ./compose/product.dockerfile
+        image: product-service:latest
+        container_name: product-service
+        volumes:
+            - .:/app
+        env_file:
+            - ./.envs/product/.env
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50051"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        depends_on:
+            auth-service:
+                condition: service_healthy
+            rabbitmq-service:
+                condition: service_healthy
+            jaeger-service:
+                condition: service_healthy
+            consul-service:
+                condition: service_healthy
+            mongo-service:
+                condition: service_healthy
+
+    auth-service:
+        build:
+            context: .
+            dockerfile: ./compose/auth.dockerfile
+        image: auth-service:latest
+        container_name: auth-service
+        volumes:
+            - .:/app
+        env_file:
+            - ./.envs/auth/.env
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50051"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        depends_on:
+            mailer-service:
+                condition: service_healthy
+            rabbitmq-service:
+                condition: service_healthy
+            jaeger-service:
+                condition: service_healthy
+            consul-service:
+                condition: service_healthy
+            mongo-service:
+                condition: service_healthy
+
+    mailer-service:
+        build:
+            context: .
+            dockerfile: ./compose/mailer.dockerfile
+        image: mailer-service:latest
+        container_name: mailer-service
+        volumes:
+            - .:/app
+        env_file:
+            - ./.envs/mailer/.env
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50052"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        depends_on:
+            mailpit-service:
+                condition: service_healthy
+            rabbitmq-service:
+                condition: service_healthy
+            jaeger-service:
+                condition: service_healthy
+            consul-service:
+                condition: service_healthy
+
+    redis-stack-service:
+        image: redis/redis-stack:latest
+        container_name: redis-stack-service
+        volumes:
+            - redis-stack-data:/data
+        ports:
+            - 8001:8001
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 1m30s
+            timeout: 30s
+            retries: 5
+            start_period: 30s
+
+    mailpit-service:
+        image: axllent/mailpit:latest
+        container_name: mailpit-service
+        volumes:
+            - mailpit-data:/data
+        ports:
+            - 8025:8025
+        env_file:
+            - ./.envs/mailpit/.env
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "wget", "--spider", "-q", "http://localhost:8025"]
+            interval: 1m30s
+            timeout: 30s
+            retries: 5
+            start_period: 30s
+
+    rabbitmq-service:
+        image: rabbitmq:management
+        container_name: rabbitmq-service
+        volumes:
+            - rabbitmq-data:/var/lib/rabbitmq
+        ports:
+            - 15672:15672
+        env_file:
+            - ./.envs/rabbitmq/.env
+        networks:
+            - oms-network
+        healthcheck:
+            test: ["CMD", "rabbitmqctl", "status"]
+            interval: 1m30s
+            timeout: 30s
+            retries: 5
+            start_period: 30s
+
+    jaeger-service:
+        image: jaegertracing/jaeger:2.12.0
+        container_name: jaeger-service
+        volumes:
+            - jaeger-data:/tmp
+
+        ports:
+            - 16686:16686
+        networks:
+            - oms-network
+
+        healthcheck:
+            test: ["CMD", "wget", "--spider", "-q", "http://localhost:16686"]
+            interval: 1m30s
+            timeout: 30s
+            retries: 5
+            start_period: 30s
+
+    consul-service:
+        image: hashicorp/consul:latest
+        container_name: consul-service
+        volumes:
+            - consul-data:/consul/data
+        ports:
+            - 8500:8500
+        networks:
+            - oms-network
+        healthcheck:
+            test:
+                ["CMD", "curl", "-X", "GET", "localhost:8500/v1/status/leader"]
+            interval: 1m30s
+            timeout: 30s
+            retries: 5
+            start_period: 30s
+
+    mongo-express-service:
+        image: mongo-express:latest
+        container_name: mongo-express-service
+        ports:
+            - 8081:8081
+        env_file:
+            - ./.envs/mongo-express/.env
+        networks:
+            - oms-network
+        depends_on:
+            mongo-service:
+                condition: service_healthy
+
+    mongo-service:
+        image: mongo:latest
+        container_name: mongo-service
+        volumes:
+            - mongo-data:/data/db
+            - mongo-data:/data/configdb
+        env_file:
+            - ./.envs/mongo/.env
+        networks:
+            - oms-network
+        healthcheck:
+            test: echo 'db.stats().ok' | mongosh localhost:27017/test --quiet
+            interval: 1m30s
+            timeout: 30s
+            retries: 5
+            start_period: 30s
+
+networks:
+    oms-network:
+        driver: bridge
+        name: oms-network

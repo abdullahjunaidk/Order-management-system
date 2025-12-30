@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package inventoryProto;
+
+option go_package = "inventory/proto;inventoryProto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// Main Models
+message Inventory {
+    string id = 1;
+    string product_id = 2;
+    string company_id = 3;
+    int64 available_quantity = 4;
+    int64 threshold_quantity = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+}
+
+// Inventory Create Models
+message CreateInventoryPayload {
+    string product_id = 1;
+    string company_id = 2;
+    int64 available_quantity = 3;
+    int64 threshold_quantity = 4;
+}
+
+// Get Inventory By ProductID & CompanyID Models
+message GetInventoryByProductIDAndCompanyIDPayload {
+    string product_id = 1;
+    string company_id = 2;
+}
+
+// Delete Inventory By ProductID & CompanyID Models
+message DeleteInventoryByProductIDAndCompanyIDPayload {
+    string product_id = 1;
+    string company_id = 2;
+}
+
+// Update Inventory Models
+message UpdateInventoryPayload {
+    string product_id = 1;
+    string company_id = 2;
+    int64 available_quantity = 3;
+    int64 threshold_quantity = 4;
+}
+
+// Inventory Service
+service InventoryService {
+    rpc CreateInventory(CreateInventoryPayload) returns (Inventory);
+    rpc GetInventoryByProductIDAndCompanyID(GetInventoryByProductIDAndCompanyIDPayload) returns (Inventory);
+    rpc DeleteInventoryByProductIDAndCompanyID(DeleteInventoryByProductIDAndCompanyIDPayload) returns (google.protobuf.Empty);
+    rpc UpdateInventory(UpdateInventoryPayload) returns (Inventory);
+}

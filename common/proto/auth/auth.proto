@@ -1,0 +1,345 @@
+syntax = "proto3";
+
+package authProto;
+
+option go_package = "auth/proto;authProto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// =============================================================================
+// Entities
+// =============================================================================
+
+message User{
+    string id = 1;
+    string name = 3;
+    string username = 2;
+    string email = 4;
+    string password_hash = 5;
+    int64 phone = 6;
+    int64 incentive = 7;
+    repeated string company_ids = 8;
+    bool is_active = 9;
+    bool is_super_admin = 10;
+    google.protobuf.Timestamp created_at = 11;
+    google.protobuf.Timestamp updated_at = 12;
+}
+
+message UserRole {
+    string id = 1;
+    string user_id = 2;
+    string role_id = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}
+
+message RolePermission {
+    string id = 1;
+    string role_id = 2;
+    string permission_id = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}
+
+message Permission {
+    string name = 1;
+    string description = 2;
+}
+
+message PermissionList {
+    repeated Permission permissions = 1;
+}
+
+message RolePermissionList {
+    repeated RolePermission role_permissions = 1;
+}
+
+message Company {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    bool is_active = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+message CompanyList {
+    repeated Company companies = 1;
+}
+
+message CompanyPermission {
+    string company_id = 1;
+    repeated Permission permissions = 2;
+}
+
+message Role {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}
+
+message RoleList {
+    repeated Role roles = 1;
+}
+
+// =============================================================================
+// Payloads & Responses
+// =============================================================================
+
+message GetByIDPayload {
+    string id = 1;
+}
+
+// --- User ---
+
+message UserRegisterPayload {
+    string username = 1;
+    string name = 2;
+    string email = 3;
+    int64 phone = 4;
+    string password_hash = 5;
+    repeated string company_ids = 6;
+}
+
+message LoginUserPayload {
+    string identifier = 1;
+    string password_hash = 2;
+}
+
+message LoginUserResponse {
+    User user = 1;
+    string access_token = 2;
+    string refresh_token = 3;
+}
+
+message LogoutUserPayload {
+    string identifier = 1;
+}
+
+message GetUserByIdentifierPayload {
+    string identifier = 1;
+}
+
+message GetUserByIdPayload {
+    string id = 1;
+}
+
+message GetUserResponse {
+    User user = 1;
+}
+
+message UpdateUserPayload {
+    string id = 1;
+    string username = 2;
+    string name = 3;
+    string email = 4;
+    int64 phone = 5;
+    string password_hash = 6;
+}
+
+message DeleteUserPayload {
+    string id = 1;
+}
+
+message DeleteUserResponse {
+    string message = 1;
+}
+
+// --- Role ---
+
+message RoleRegisterPayload {
+    string name = 1;
+    string slug = 2;
+    string description = 3;
+    repeated Permission permissions = 4;
+}
+
+message GetRoleByIdentifierPayload {
+    string identifier = 1; //name
+}
+
+message GetRoleByIdPayload {
+    string id = 1;
+}
+
+message GetRoleResponse {
+    Role role = 1;
+}
+
+message UpdateRolePayload {
+    string id = 1;
+    string name = 2;
+    string slug = 3;
+    string description = 4;
+    repeated Permission permissions = 5;
+}
+
+message DeleteRolePayload {
+    string id = 1;
+}
+
+message DeleteRoleResponse {
+    string message = 1;
+}
+
+// --- User Company Role ---
+
+message AssignRolePayload {
+    string user_id = 1;
+    string company_id = 2;
+    string role_id = 3;
+}
+
+message SetCustomPermissionsPayload {
+    string user_id = 1;
+    string company_id = 2;
+    repeated Permission permissions = 3;
+}
+
+message SetCustomPermissionsResponse {
+    string message = 1;
+}
+
+message GetUserPermissionsPayload {
+    string user_id = 1;
+    string company_id = 2;
+}
+
+message GetUserPermissionsResponse {
+    repeated Permission permissions = 1;
+}
+
+message GetUserRolePayload {
+    string user_id = 1;
+    string role_id = 2;
+}
+
+message GetUserRolesPayload {
+    string user_id = 1;
+}
+
+message GetUserRolesResponse {
+    repeated UserRole user_roles = 1;
+}
+
+message RevokeAccessRequest {
+    string userId = 1;
+    string companyId = 2;
+}
+
+message RevokeAccessResponse {
+    string message = 1;
+}
+
+// --- Company ---
+
+message CompanyRegisterPayload {
+    string name = 1;
+    string description = 2;
+}
+
+message GetCompanyByIdentifierPayload {
+    string identifier = 1;
+}
+
+message GetCompanyByIDPayload {
+    string id = 1;
+}
+
+message GetCompanyResponse {
+    Company company = 1;
+}
+
+message DeleteCompanyPayload {
+    string id = 1;
+}
+
+message DeleteCompanyResponse {
+    string message = 1;
+}
+
+// --- Authentication (Login/Logout/Tokens) ---
+
+message VerifyAccessTokenPayload {
+    string access_token = 1;
+}
+
+message RefreshAccessTokenPayload {
+    string refresh_token = 1;
+}
+
+message ValidateAccessRequest {
+  string user_id = 1;
+  string company_id = 2;
+  string permission = 3;
+}
+
+message ValidateAccessResponse {
+  bool allowed = 1;
+}
+
+
+// --- User/Account Management ---
+
+message ActivateUserPayload {
+    string activation_token = 1;
+}
+
+message ResendActivationPayload {
+    string identifier = 1;
+}
+
+message ForgotPasswordPayload {
+    string identifier = 1;
+}
+
+message ResetPasswordPayload {
+    string password_reset_token = 1;
+    string password_hash = 2;
+}
+
+// =============================================================================
+// Service Definition
+// =============================================================================
+
+service AuthService {
+    // Registration
+    
+    // User
+    rpc RegisterUser(UserRegisterPayload) returns (User);
+    rpc LoginUser(LoginUserPayload) returns (LoginUserResponse);
+    rpc LogoutUser(LogoutUserPayload) returns (google.protobuf.Empty);
+    rpc GetUserByIdentifier(GetUserByIdentifierPayload) returns (User);
+    rpc GetUserById(GetUserByIdPayload) returns (User);
+    rpc UpdateUser(UpdateUserPayload) returns (User);
+    rpc DeleteUser(DeleteUserPayload) returns (DeleteUserResponse);
+
+    rpc VerifyAccessToken(VerifyAccessTokenPayload) returns (User);
+    rpc RefreshAccessToken(RefreshAccessTokenPayload) returns (LoginUserResponse);
+    rpc ActivateUser(ActivateUserPayload) returns (User);
+    rpc ResendActivation(ResendActivationPayload) returns (User);
+
+    // Role management
+    rpc RegisterRole(RoleRegisterPayload) returns (Role);
+    rpc GetRoles(google.protobuf.Empty) returns (RoleList);
+    rpc GetRoleByIdentifier(GetRoleByIdentifierPayload) returns (Role);
+    rpc GetRoleById(GetRoleByIdPayload) returns (Role);
+    rpc UpdateRole(UpdateRolePayload) returns (google.protobuf.Empty);
+    rpc DeleteRole(DeleteRolePayload) returns (google.protobuf.Empty);
+
+    // Company management
+    rpc RegisterCompany(CompanyRegisterPayload) returns (Company);
+    rpc GetCompanyByIdentifier(GetCompanyByIdentifierPayload) returns (Company);
+    rpc GetCompanyByID(GetCompanyByIDPayload) returns (Company);
+    rpc GetAllCompany(google.protobuf.Empty) returns (CompanyList);
+    rpc UpdateCompany(CompanyRegisterPayload) returns (Company);
+    rpc DeleteCompany(DeleteCompanyPayload) returns (google.protobuf.Empty);
+
+    // Account Management
+    rpc ForgotPassword(ForgotPasswordPayload) returns (google.protobuf.Empty);
+    rpc ResetPassword(ResetPasswordPayload) returns (google.protobuf.Empty);
+
+}

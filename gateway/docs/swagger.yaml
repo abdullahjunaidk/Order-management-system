@@ -1,0 +1,1635 @@
+basePath: /api/v1
+definitions:
+  models.AdminLoginErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Login Admin!
+        type: string
+    type: object
+  models.AdminLoginSuccessResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhZGNhMGI0ZTg2NGNmZmIwMDIyOTkiLCJleHBpcmVkX2F0IjoiMjAyMS0wNy0wMVQwMDowMDowMC4wMDBaIiwiaWF0IjoxNjI0MzQwNjAwfQ.7
+        type: string
+      admin:
+        $ref: '#/definitions/models.Employee'
+      message:
+        example: Admin Logged In Successfully!
+        type: string
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhZGNhMGI0ZTg2NGNmZmIwMDIyOTkiLCJleHBpcmVkX2F0IjoiMjAyMS0wNy0wMVQwMDowMDowMC4wMDBaIiwiaWF0IjoxNjI0MzQwNjAwfQ.7
+        type: string
+    type: object
+  models.BrandAccessDTO:
+    properties:
+      brand_id:
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+    required:
+    - brand_id
+    - roles
+    type: object
+  models.Business:
+    properties:
+      contact_information:
+        example: datastores@example.com
+        type: string
+      location:
+        example: New York
+        type: string
+      name:
+        example: Data Stores
+        type: string
+    required:
+    - contact_information
+    - location
+    - name
+    type: object
+  models.CancelOrderErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Cancel Order!
+        type: string
+    type: object
+  models.CancelOrderSuccessResponse:
+    properties:
+      message:
+        example: Order Cancelled Successfully!
+        type: string
+    type: object
+  models.CreateInventoryErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Create Inventory!
+        type: string
+    type: object
+  models.CreateInventoryPayload:
+    properties:
+      available_quantity:
+        example: 100
+        type: integer
+      threshold_quantity:
+        example: 10
+        type: integer
+    required:
+    - available_quantity
+    - threshold_quantity
+    type: object
+  models.CreateInventorySuccessResponse:
+    properties:
+      inventory:
+        $ref: '#/definitions/models.Inventory'
+      message:
+        example: Inventory Created Successfully!
+        type: string
+    type: object
+  models.DeleteInventoryByProductIDAndVendorIDErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Delete Inventory!
+        type: string
+    type: object
+  models.DeleteInventoryByProductIDAndVendorIDSuccessResponse:
+    properties:
+      message:
+        example: Inventory Deleted Successfully!
+        type: string
+    type: object
+  models.DeleteProductErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Delete Product!
+        type: string
+    type: object
+  models.DeleteProductSuccessResponse:
+    properties:
+      message:
+        example: Product Deleted Successfully!
+        type: string
+    type: object
+  models.Employee:
+    properties:
+      access:
+        items:
+          $ref: '#/definitions/models.BrandAccessDTO'
+        type: array
+      created_at:
+        type: string
+      email:
+        example: johndoe@example.com
+        type: string
+      id:
+        type: string
+      incentive:
+        type: integer
+      is_active:
+        type: boolean
+      name:
+        example: johndoe
+        type: string
+      phone:
+        example: 9876543210
+        maximum: 10
+        minimum: 10
+        type: integer
+      role:
+        example: employee
+        type: string
+      updated_at:
+        type: string
+      username:
+        example: johndoe
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - email
+    - name
+    - phone
+    - username
+    type: object
+  models.EmployeeActivateErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Activate Employee!
+        type: string
+    type: object
+  models.EmployeeActivateSuccessResponse:
+    properties:
+      employee:
+        $ref: '#/definitions/models.Employee'
+      message:
+        example: Employee Activated Successfully!
+        type: string
+    type: object
+  models.ForgotPasswordErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Send Password Reset Email!
+        type: string
+    type: object
+  models.ForgotPasswordPayload:
+    properties:
+      identifier:
+        example: johndoe/johndoe@example.com
+        type: string
+    required:
+    - identifier
+    type: object
+  models.ForgotPasswordSuccessResponse:
+    properties:
+      message:
+        example: Password Reset Email Sent Successfully!
+        type: string
+    type: object
+  models.GetInventoryByProductIDAndVendorIDErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Get Inventory!
+        type: string
+    type: object
+  models.GetInventoryByProductIDAndVendorIDSuccessResponse:
+    properties:
+      inventory:
+        $ref: '#/definitions/models.Inventory'
+      message:
+        example: Inventory Fetched Successfully!
+        type: string
+    type: object
+  models.GetOrderByIDErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Retrieve Order!
+        type: string
+    type: object
+  models.GetOrderByIDSuccessResponse:
+    properties:
+      message:
+        example: Order Retrieved Successfully!
+        type: string
+      order:
+        $ref: '#/definitions/models.Order'
+    type: object
+  models.Inventory:
+    properties:
+      available_quantity:
+        example: 100
+        type: integer
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      product_id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      threshold_quantity:
+        example: 10
+        type: integer
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      vendor_id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+    type: object
+  models.ListProductsByVendorIDErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to List Products!
+        type: string
+    type: object
+  models.ListProductsByVendorIDSuccessResponse:
+    properties:
+      message:
+        example: Products Listed Successfully!
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.Product'
+        type: array
+      total_count:
+        example: 100
+        type: integer
+    type: object
+  models.Order:
+    properties:
+      created_at:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+      customer_id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      payment_link_id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      status:
+        example: pending
+        type: string
+      total_price:
+        example: 100
+        type: number
+      updated_at:
+        example: "2024-01-01T00:00:00Z"
+        type: string
+    type: object
+  models.OrderCreateErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Create Order!
+        type: string
+    type: object
+  models.OrderCreatePayload:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+    required:
+    - items
+    type: object
+  models.OrderCreateSuccessResponse:
+    properties:
+      message:
+        example: Order Created Successfully!
+        type: string
+      order:
+        $ref: '#/definitions/models.Order'
+    type: object
+  models.OrderItem:
+    properties:
+      product_id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      quantity:
+        example: 1
+        type: integer
+      vendor_id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+    required:
+    - product_id
+    - quantity
+    - vendor_id
+    type: object
+  models.Product:
+    properties:
+      brand_id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      category:
+        example: Product Category
+        type: string
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      description:
+        example: Product Description
+        type: string
+      id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      inventory:
+        $ref: '#/definitions/models.ProductInventory'
+      name:
+        example: Product Name
+        type: string
+      net_weight:
+        example: 100
+        type: number
+      price:
+        example: 100
+        type: number
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  models.ProductCreateErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Create Product!
+        type: string
+    type: object
+  models.ProductCreatePayload:
+    properties:
+      brand_id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      category:
+        example: Product Category
+        type: string
+      description:
+        example: Product Description
+        type: string
+      name:
+        example: Product Name
+        type: string
+      net_weight:
+        example: 100
+        type: number
+      price:
+        example: 100
+        type: number
+    required:
+    - brand_id
+    - description
+    - name
+    - net_weight
+    - price
+    type: object
+  models.ProductCreateSuccessResponse:
+    properties:
+      message:
+        example: Product Created Successfully!
+        type: string
+      product:
+        $ref: '#/definitions/models.Product'
+    type: object
+  models.ProductInventory:
+    properties:
+      available_quantity:
+        example: 100
+        type: integer
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      threshold_quantity:
+        example: 10
+        type: integer
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  models.ProductUpdateErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Update Product!
+        type: string
+    type: object
+  models.ProductUpdatePayload:
+    properties:
+      brand_id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      category:
+        example: Product Category
+        type: string
+      description:
+        example: Product Description
+        type: string
+      name:
+        example: Product Name
+        type: string
+      net_weight:
+        example: 100
+        type: number
+      price:
+        example: 100
+        type: number
+    required:
+    - brand_id
+    - description
+    - name
+    - net_weight
+    - price
+    type: object
+  models.ProductUpdateSuccessResponse:
+    properties:
+      message:
+        example: Product Updated Successfully!
+        type: string
+      product:
+        $ref: '#/definitions/models.Product'
+    type: object
+  models.ResendActivationEmailErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Send Activation Email!
+        type: string
+    type: object
+  models.ResendActivationEmailPayload:
+    properties:
+      identifier:
+        example: johndoe/johndoe@example.com
+        type: string
+    required:
+    - identifier
+    type: object
+  models.ResendActivationEmailSuccessResponse:
+    properties:
+      message:
+        example: Activation Email Sent Successfully!
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  models.ResetPasswordErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Reset Password!
+        type: string
+    type: object
+  models.ResetPasswordPayload:
+    properties:
+      confirm_password:
+        example: strong@password
+        type: string
+      password:
+        example: strong@password
+        minLength: 8
+        type: string
+    required:
+    - confirm_password
+    - password
+    type: object
+  models.ResetPasswordSuccessResponse:
+    properties:
+      message:
+        example: Password Reset Successfully!
+        type: string
+    type: object
+  models.UnauthorizedErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Unauthorized!
+        type: string
+    type: object
+  models.UpdateInventoryErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Update Inventory!
+        type: string
+    type: object
+  models.UpdateInventoryPayload:
+    properties:
+      available_quantity:
+        example: 100
+        type: integer
+      threshold_quantity:
+        example: 10
+        type: integer
+    required:
+    - available_quantity
+    - threshold_quantity
+    type: object
+  models.UpdateInventorySuccessResponse:
+    properties:
+      inventory:
+        $ref: '#/definitions/models.Inventory'
+      message:
+        example: Inventory Updated Successfully!
+        type: string
+    type: object
+  models.User:
+    properties:
+      created_at:
+        example: "2021-07-01T00:00:00Z"
+        type: string
+      email:
+        example: johndoe@example.com
+        type: string
+      id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      is_active:
+        example: false
+        type: boolean
+      role:
+        example: customer
+        type: string
+      updated_at:
+        example: "2021-07-01T00:00:00Z"
+        type: string
+      username:
+        example: johndoe
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - email
+    - username
+    type: object
+  models.UserLoginErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Login User!
+        type: string
+    type: object
+  models.UserLoginPayload:
+    properties:
+      identifier:
+        example: johndoe/johndoe@example.com
+        type: string
+      password:
+        example: strong@password
+        type: string
+    required:
+    - identifier
+    - password
+    type: object
+  models.UserLoginSuccessResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhZGNhMGI0ZTg2NGNmZmIwMDIyOTkiLCJleHBpcmVkX2F0IjoiMjAyMS0wNy0wMVQwMDowMDowMC4wMDBaIiwiaWF0IjoxNjI0MzQwNjAwfQ.7
+        type: string
+      message:
+        example: User Logged In Successfully!
+        type: string
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhZGNhMGI0ZTg2NGNmZmIwMDIyOTkiLCJleHBpcmVkX2F0IjoiMjAyMS0wNy0wMVQwMDowMDowMC4wMDBaIiwiaWF0IjoxNjI0MzQwNjAwfQ.7
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  models.UserLogoutErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Logout User!
+        type: string
+    type: object
+  models.UserLogoutPayload:
+    properties:
+      identifier:
+        example: johndoe/johndoe@example.com
+        type: string
+      password:
+        example: strong@password
+        type: string
+    required:
+    - identifier
+    - password
+    type: object
+  models.UserLogoutSuccessResponse:
+    properties:
+      message:
+        example: User Logged Out Successfully!
+        type: string
+    type: object
+  models.UserRefreshAccessTokenErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Refresh User Access Token!
+        type: string
+    type: object
+  models.UserRefreshAccessTokenPayload:
+    properties:
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhZGNhMGI0ZTg2NGNmZmIwMDIyOTkiLCJleHBpcmVkX2F0IjoiMjAyMS0wNy0wMVQwMDowMDowMC4wMDBaIiwiaWF0IjoxNjI0MzQwNjAwfQ.7
+        type: string
+    required:
+    - refresh_token
+    type: object
+  models.UserRefreshAccessTokenSuccessResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhZGNhMGI0ZTg2NGNmZmIwMDIyOTkiLCJleHBpcmVkX2F0IjoiMjAyMS0wNy0wMVQwMDowMDowMC4wMDBaIiwiaWF0IjoxNjI0MzQwNjAwfQ.7
+        type: string
+      message:
+        example: User Access Token Refreshed Successfully!
+        type: string
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhZGNhMGI0ZTg2NGNmZmIwMDIyOTkiLCJleHBpcmVkX2F0IjoiMjAyMS0wNy0wMVQwMDowMDowMC4wMDBaIiwiaWF0IjoxNjI0MzQwNjAwfQ.7
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  models.UserRegisterErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Register User!
+        type: string
+    type: object
+  models.UserRegisterPayload:
+    properties:
+      email:
+        example: johndoe@example.com
+        type: string
+      password:
+        example: strong@password
+        minLength: 8
+        type: string
+      username:
+        example: johndoe
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  models.UserRegisterSuccessResponse:
+    properties:
+      message:
+        example: User Registered Successfully!
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  models.VendorRegisterErrorResponse:
+    properties:
+      error:
+        example: <error_message>
+        type: string
+      message:
+        example: Failed to Register Vendor!
+        type: string
+    type: object
+  models.VendorRegisterPayload:
+    properties:
+      business:
+        $ref: '#/definitions/models.Business'
+      email:
+        example: johndoe@example.com
+        type: string
+      password:
+        example: strong@password
+        minLength: 8
+        type: string
+      username:
+        example: johndoe
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  models.VendorRegisterSuccessResponse:
+    properties:
+      message:
+        example: Vendor Registered Successfully!
+        type: string
+      user:
+        $ref: '#/definitions/models.VendorUser'
+    type: object
+  models.VendorUser:
+    properties:
+      business:
+        $ref: '#/definitions/models.Business'
+      created_at:
+        example: "2021-07-01T00:00:00Z"
+        type: string
+      email:
+        example: johndoe@example.com
+        type: string
+      id:
+        example: 67adca0b4e864cfffb002299
+        type: string
+      is_active:
+        example: false
+        type: boolean
+      role:
+        example: customer
+        type: string
+      updated_at:
+        example: "2021-07-01T00:00:00Z"
+        type: string
+      username:
+        example: johndoe
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - email
+    - username
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: rohit.vilas.ingole@gmail.com
+    name: Rohit Vilas Ingole
+  description: This is the API for Gopher Social, a social media platform for Gophers.
+  license:
+    name: MIT License
+    url: https://github.com/DataRohit/Order-Management-System/blob/master/license
+  title: Gopher Social API
+  version: "1.0"
+paths:
+  /auth/activate/{activationToken}:
+    get:
+      consumes:
+      - application/json
+      description: Activate a User in the Platform
+      parameters:
+      - description: Activation Token
+        in: path
+        name: activationToken
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully activated user
+          schema:
+            $ref: '#/definitions/models.UserRegisterSuccessResponse'
+        "500":
+          description: Failed to activate the user
+          schema:
+            $ref: '#/definitions/models.UserRegisterErrorResponse'
+      summary: Activate a User
+      tags:
+      - Auth
+  /auth/admin/login:
+    post:
+      consumes:
+      - application/json
+      description: Login an Admin to the Platform
+      parameters:
+      - description: Admin Login Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLoginPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged in admin
+          schema:
+            $ref: '#/definitions/models.AdminLoginSuccessResponse'
+        "400":
+          description: Failed to login the admin
+          schema:
+            $ref: '#/definitions/models.AdminLoginErrorResponse'
+        "500":
+          description: Failed to login the admin
+          schema:
+            $ref: '#/definitions/models.AdminLoginErrorResponse'
+      summary: Login Admin
+      tags:
+      - Auth
+  /auth/customer/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new User to the Platform
+      parameters:
+      - description: User Register Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegisterPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully registered user
+          schema:
+            $ref: '#/definitions/models.UserRegisterSuccessResponse'
+        "400":
+          description: Failed to register the user
+          schema:
+            $ref: '#/definitions/models.UserRegisterErrorResponse'
+        "500":
+          description: Failed to register the user
+          schema:
+            $ref: '#/definitions/models.UserRegisterErrorResponse'
+      summary: Register a new User
+      tags:
+      - Auth
+  /auth/employee/activate/{activationToken}:
+    get:
+      consumes:
+      - application/json
+      description: Activate an Employee in the Platform
+      parameters:
+      - description: Activation Token
+        in: path
+        name: activationToken
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully activated employee
+          schema:
+            $ref: '#/definitions/models.EmployeeActivateSuccessResponse'
+        "500":
+          description: Failed to activate the employee
+          schema:
+            $ref: '#/definitions/models.EmployeeActivateErrorResponse'
+      summary: Activate an Employee
+      tags:
+      - Auth
+  /auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Forgot Password for a User
+      parameters:
+      - description: Forgot Password Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgotPasswordPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully sent password reset email
+          schema:
+            $ref: '#/definitions/models.ForgotPasswordSuccessResponse'
+        "400":
+          description: Failed to send password reset email
+          schema:
+            $ref: '#/definitions/models.ForgotPasswordErrorResponse'
+        "500":
+          description: Failed to send password reset email
+          schema:
+            $ref: '#/definitions/models.ForgotPasswordErrorResponse'
+      summary: Forgot Password
+      tags:
+      - Auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a User to the Platform
+      parameters:
+      - description: User Login Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLoginPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged in user
+          schema:
+            $ref: '#/definitions/models.UserLoginSuccessResponse'
+        "400":
+          description: Failed to login the user
+          schema:
+            $ref: '#/definitions/models.UserLoginErrorResponse'
+        "500":
+          description: Failed to login the user
+          schema:
+            $ref: '#/definitions/models.UserLoginErrorResponse'
+      summary: Login User
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout a User from the Platform
+      parameters:
+      - description: User Logout Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogoutPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged out user
+          schema:
+            $ref: '#/definitions/models.UserLogoutSuccessResponse'
+        "400":
+          description: Failed to logout the user
+          schema:
+            $ref: '#/definitions/models.UserLogoutErrorResponse'
+        "500":
+          description: Failed to logout the user
+          schema:
+            $ref: '#/definitions/models.UserLogoutErrorResponse'
+      summary: Logout User
+      tags:
+      - Auth
+  /auth/refresh-access-token:
+    post:
+      consumes:
+      - application/json
+      description: Refresh Access Token for a User
+      parameters:
+      - description: User Refresh Access Token Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRefreshAccessTokenPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully refreshed user access token
+          schema:
+            $ref: '#/definitions/models.UserRefreshAccessTokenSuccessResponse'
+        "400":
+          description: Failed to refresh user access token
+          schema:
+            $ref: '#/definitions/models.UserRefreshAccessTokenErrorResponse'
+        "500":
+          description: Failed to refresh user access token
+          schema:
+            $ref: '#/definitions/models.UserRefreshAccessTokenErrorResponse'
+      summary: Refresh Access Token
+      tags:
+      - Auth
+  /auth/resend-activation-email:
+    post:
+      consumes:
+      - application/json
+      description: Resend Activation Email to a User
+      parameters:
+      - description: Resend Activation Email Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.ResendActivationEmailPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully resent activation email
+          schema:
+            $ref: '#/definitions/models.ResendActivationEmailSuccessResponse'
+        "400":
+          description: Failed to resend activation email
+          schema:
+            $ref: '#/definitions/models.ResendActivationEmailErrorResponse'
+        "500":
+          description: Failed to resend activation email
+          schema:
+            $ref: '#/definitions/models.ResendActivationEmailErrorResponse'
+      summary: Resend Activation Email
+      tags:
+      - Auth
+  /auth/reset-password/{passwordResetToken}:
+    post:
+      consumes:
+      - application/json
+      description: Reset Password for a User
+      parameters:
+      - description: Password Reset Token
+        in: path
+        name: passwordResetToken
+        required: true
+        type: string
+      - description: Reset Password Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.ResetPasswordPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully reset password
+          schema:
+            $ref: '#/definitions/models.ResetPasswordSuccessResponse'
+        "400":
+          description: Failed to reset password
+          schema:
+            $ref: '#/definitions/models.ResetPasswordErrorResponse'
+        "500":
+          description: Failed to reset password
+          schema:
+            $ref: '#/definitions/models.ResetPasswordErrorResponse'
+      summary: Reset Password
+      tags:
+      - Auth
+  /auth/vendor/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new Vendor to the Platform
+      parameters:
+      - description: Vendor Register Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.VendorRegisterPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully registered vendor
+          schema:
+            $ref: '#/definitions/models.VendorRegisterSuccessResponse'
+        "400":
+          description: Failed to register the vendor
+          schema:
+            $ref: '#/definitions/models.VendorRegisterErrorResponse'
+        "500":
+          description: Failed to register the vendor
+          schema:
+            $ref: '#/definitions/models.VendorRegisterErrorResponse'
+      summary: Register a new Vendor
+      tags:
+      - Auth
+  /order:
+    post:
+      consumes:
+      - application/json
+      description: Create a new order for a customer
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Order Create Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderCreatePayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Order Created Successfully!
+          schema:
+            $ref: '#/definitions/models.OrderCreateSuccessResponse'
+        "400":
+          description: Failed to Create Order!
+          schema:
+            $ref: '#/definitions/models.OrderCreateErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.OrderCreateErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new order
+      tags:
+      - Order
+  /order/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Cancel an order for a customer
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order Cancelled Successfully!
+          schema:
+            $ref: '#/definitions/models.CancelOrderSuccessResponse'
+        "400":
+          description: Failed to Cancel Order!
+          schema:
+            $ref: '#/definitions/models.CancelOrderErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.CancelOrderErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Cancel an order
+      tags:
+      - Order
+    get:
+      consumes:
+      - application/json
+      description: Get order by ID for a customer
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order Retrieved Successfully!
+          schema:
+            $ref: '#/definitions/models.GetOrderByIDSuccessResponse'
+        "400":
+          description: Failed to Get Order!
+          schema:
+            $ref: '#/definitions/models.GetOrderByIDErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.GetOrderByIDErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get order by ID
+      tags:
+      - Order
+  /order/webhook:
+    post:
+      consumes:
+      - application/json
+      description: Handle Stripe webhook events
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Webhook Handled Successfully!
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error!
+      summary: Handle Stripe webhook
+      tags:
+      - Order
+  /product:
+    get:
+      consumes:
+      - application/json
+      description: List products for a vendor on the Platform with pagination
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: 10
+        description: Limit
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Products Listed Successfully!
+          schema:
+            $ref: '#/definitions/models.ListProductsByVendorIDSuccessResponse'
+        "400":
+          description: Failed to List Products!
+          schema:
+            $ref: '#/definitions/models.ListProductsByVendorIDErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.ListProductsByVendorIDErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List products by vendor ID
+      tags:
+      - Product
+    post:
+      consumes:
+      - application/json
+      description: Create a new product on the Platform
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product Create Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductCreatePayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Product Created Successfully!
+          schema:
+            $ref: '#/definitions/models.ProductCreateSuccessResponse'
+        "400":
+          description: Failed to Create Product!
+          schema:
+            $ref: '#/definitions/models.ProductCreateErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.ProductCreateErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new product
+      tags:
+      - Product
+  /product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a product on the Platform
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product Deleted Successfully!
+          schema:
+            $ref: '#/definitions/models.DeleteProductSuccessResponse'
+        "400":
+          description: Failed to Delete Product!
+          schema:
+            $ref: '#/definitions/models.DeleteProductErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.DeleteProductErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a product
+      tags:
+      - Product
+    put:
+      consumes:
+      - application/json
+      description: Update a product on the Platform
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Product Update Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductUpdatePayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product Updated Successfully!
+          schema:
+            $ref: '#/definitions/models.ProductUpdateSuccessResponse'
+        "400":
+          description: Failed to Update Product!
+          schema:
+            $ref: '#/definitions/models.ProductUpdateErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.ProductUpdateErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a product
+      tags:
+      - Product
+  /product/{id}/inventory:
+    delete:
+      consumes:
+      - application/json
+      description: Delete inventory for a product by vendor
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Inventory Deleted Successfully!
+          schema:
+            $ref: '#/definitions/models.DeleteInventoryByProductIDAndVendorIDSuccessResponse'
+        "400":
+          description: Failed to Delete Inventory!
+          schema:
+            $ref: '#/definitions/models.DeleteInventoryByProductIDAndVendorIDErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.DeleteInventoryByProductIDAndVendorIDErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete inventory by product ID
+      tags:
+      - Inventory
+    get:
+      consumes:
+      - application/json
+      description: Get inventory for a product by vendor
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Inventory Fetched Successfully!
+          schema:
+            $ref: '#/definitions/models.GetInventoryByProductIDAndVendorIDSuccessResponse'
+        "400":
+          description: Failed to Get Inventory!
+          schema:
+            $ref: '#/definitions/models.GetInventoryByProductIDAndVendorIDErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.GetInventoryByProductIDAndVendorIDErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get inventory by product ID
+      tags:
+      - Inventory
+    post:
+      consumes:
+      - application/json
+      description: Create a new inventory for a product by vendor
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Inventory Create Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateInventoryPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Inventory Created Successfully!
+          schema:
+            $ref: '#/definitions/models.CreateInventorySuccessResponse'
+        "400":
+          description: Failed to Create Inventory!
+          schema:
+            $ref: '#/definitions/models.CreateInventoryErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.CreateInventoryErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new inventory
+      tags:
+      - Inventory
+    put:
+      consumes:
+      - application/json
+      description: Update inventory for a product by vendor
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Inventory Update Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateInventoryPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Inventory Updated Successfully!
+          schema:
+            $ref: '#/definitions/models.UpdateInventorySuccessResponse'
+        "400":
+          description: Failed to Update Inventory!
+          schema:
+            $ref: '#/definitions/models.UpdateInventoryErrorResponse'
+        "401":
+          description: Unauthorized!
+          schema:
+            $ref: '#/definitions/models.UnauthorizedErrorResponse'
+        "500":
+          description: Internal Server Error!
+          schema:
+            $ref: '#/definitions/models.UpdateInventoryErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update inventory
+      tags:
+      - Inventory
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

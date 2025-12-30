@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package productProto;
+
+option go_package = "product/proto;productProto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// Main Models
+message Product {
+    string id = 1;
+    string company_id = 2;
+    string name = 3;
+    string description = 4;
+    string category = 5;
+    float price = 6;
+    string price_id = 7;
+    float net_weight = 8;
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+}
+
+// Product Create Models
+message ProductCreatePayload {
+    string company_id = 1;
+    string name = 2;
+    string description = 3;
+    string category = 4;
+    float price = 5;
+    float net_weight = 6;
+}
+
+// Get Product By ID & Company ID
+message GetProductByIDAndCompanyIDPayload {
+    string id = 1;
+    string company_id = 2;
+}
+
+// Product Update Models
+message ProductUpdatePayload {
+    string id = 1;
+    string company_id = 2;
+    string name = 3;
+    string description = 4;
+    string category = 5;
+    float price = 6;
+    float net_weight = 7;
+}
+
+// List Products By CompanyID Models
+message ListProductsByCompanyIDPayload {
+    string company_id = 1;
+    int64 limit = 2;
+    int64 offset = 3;
+}
+
+message ListProductsResponse {
+    repeated Product products = 1;
+    int64 total_count = 2;
+}
+
+// Delete Product Models
+message DeleteProductPayload {
+    string id = 1;
+    string company_id = 2;
+}
+
+// Set Product Price ID Model
+message SetProductPriceIDPayload {
+    string id = 1;
+    string company_id = 2;
+    string price_id = 3;
+}
+
+
+// Product Service
+service ProductService {
+    rpc CreateProduct(ProductCreatePayload) returns (Product);
+    rpc GetProductByIDAndCompanyID(GetProductByIDAndCompanyIDPayload) returns (Product);
+    rpc UpdateProduct(ProductUpdatePayload) returns (Product);
+    rpc ListProductsByCompanyID(ListProductsByCompanyIDPayload) returns (ListProductsResponse);
+    rpc DeleteProduct(DeleteProductPayload) returns (google.protobuf.Empty);
+    rpc SetProductPriceID(SetProductPriceIDPayload) returns (google.protobuf.Empty);
+}

@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package orderProto;
+
+option go_package = "order/proto;orderProto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// Main Models
+message OrderItem {
+    string product_id = 1;
+    string company_id = 2;
+    int64 quantity = 3;
+}
+
+message Order {
+    string order_id = 1;
+    repeated OrderItem items = 2;
+    string customer_id = 3;
+    string status = 4;
+    float total_price = 5;
+    string payment_link_id = 6;
+    string payment_id = 7;
+    google.protobuf.Timestamp created_at = 8;
+    google.protobuf.Timestamp updated_at = 9;
+}
+
+// Order Create Models
+message OrderCreatePayload {
+    repeated OrderItem items = 1;
+    string customer_id = 2;
+}
+
+// Get Order By ID & Customer ID
+message GetOrderByIDAndCustomerIDPayload {
+    string order_id = 1;
+    string customer_id = 2;
+}
+
+// Set Order Payment Link ID
+message SetOrderPaymentLinkIDPayload {
+    string order_id = 1;
+    string customer_id = 2;
+    string payment_link_id = 3;
+}
+
+// Cancel Order
+message CancelOrderPayload {
+    string order_id = 1;
+    string customer_id = 2;
+}
+
+// Set Order Paid
+message SetOrderPaidPayload {
+    string order_id = 1;
+    string customer_id = 2;
+    string payment_id = 3;
+}
+
+// Order Service
+service OrderService {
+    rpc CreateOrder(OrderCreatePayload) returns (Order);
+    rpc GetOrderByIDAndCustomerID(GetOrderByIDAndCustomerIDPayload) returns (Order);
+    rpc SetOrderPaymentLinkID(SetOrderPaymentLinkIDPayload) returns (google.protobuf.Empty);
+    rpc CancelOrder(CancelOrderPayload) returns (google.protobuf.Empty);
+    rpc SetOrderPaid(SetOrderPaidPayload) returns (google.protobuf.Empty);
+}
