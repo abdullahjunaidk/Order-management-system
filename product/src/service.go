@@ -30,6 +30,7 @@ var (
 //   - SetProductPriceID(ctx context.Context, productID string, companyID string, priceID string) error: This method is used to set product price ID.
 type ProductService interface {
 	CreateProduct(ctx context.Context, payload ProductCreatePayload) (*Product, error)
+	GetProductByID(ctx context.Context, productID string) (*Product, error)
 	GetProductByIDAndCompanyID(ctx context.Context, productID string, companyID string) (*Product, error)
 	UpdateProduct(ctx context.Context, productID string, companyID string, payload ProductUpdatePayload) (*Product, error)
 	ListProductsByCompanyID(ctx context.Context, companyID string, limit int64, offset int64) (*ListProductsResponse, error)
@@ -85,7 +86,7 @@ func (s *productService) CreateProduct(ctx context.Context, payload ProductCreat
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		},
-		CompanyID: payload.CompanyID,
+		CompanyID:   payload.CompanyID,
 		Name:        payload.Name,
 		Description: payload.Description,
 		Category:    payload.Category,
@@ -109,7 +110,7 @@ func (s *productService) CreateProduct(ctx context.Context, payload ProductCreat
 
 	eventPayload := ProductCreatedEventPayload{
 		ID:          createdProduct.ID.Hex(),
-		CompanyID:    createdProduct.CompanyID,
+		CompanyID:   createdProduct.CompanyID,
 		Name:        createdProduct.Name,
 		Description: createdProduct.Description,
 		Category:    createdProduct.Category,
@@ -124,6 +125,32 @@ func (s *productService) CreateProduct(ctx context.Context, payload ProductCreat
 
 	span.SetStatus(otlpcodes.Ok, "Product Created Successfully!")
 	return createdProduct, nil
+}
+
+// GetProductByID method.
+// This method is used to get a product by ID.
+//
+// Parameters:
+//   - ctx (context.Context): The context.
+//   - productID (string): The product ID.
+//
+// Returns:
+//   - *Product: The product.
+//   - error: An error if occurred.
+func (s *productService) GetProductByID(ctx context.Context, productID string) (*Product, error) {
+	tracer := otel.Tracer("product-service")
+	ctx, span := tracer.Start(ctx, "productService.GetProductByID")
+	defer span.End()
+
+	product, err := s.store.GetProductByID(ctx, productID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Product Found Successfully!")
+	return product, nil
 }
 
 // GetProductByIDAndCompanyID method.
@@ -199,7 +226,7 @@ func (s *productService) UpdateProduct(ctx context.Context, productID string, co
 
 	eventPayload := ProductUpdatedEventPayload{
 		ID:          updatedProduct.ID.Hex(),
-		CompanyID:    updatedProduct.CompanyID,
+		CompanyID:   updatedProduct.CompanyID,
 		Name:        updatedProduct.Name,
 		Description: updatedProduct.Description,
 		Category:    updatedProduct.Category,

@@ -81,6 +81,14 @@ type AuthStore interface {
 	GetUserRole(ctx context.Context, userID string, roleID string) (UserRole, error)
 	GetUserRolesByUserID(ctx context.Context, userID string) ([]UserRole, error)
 	GetUserRolesByRoleID(ctx context.Context, roleID string) ([]UserRole, error)
+
+	// Enhanced RBAC Methods
+	AssignPermissionsToRole(ctx context.Context, roleID string, permissionIDs []string) error
+	RemovePermissionFromRole(ctx context.Context, roleID string, permissionID string) error
+	RemoveRoleFromUser(ctx context.Context, userID string, roleID string) error
+	GetPermissionsByRoleID(ctx context.Context, roleID string) ([]Permission, error)
+	GetRolesByUserID(ctx context.Context, userID string) ([]Role, error)
+	GetPermissionByID(ctx context.Context, permissionID string) (*Permission, error)
 }
 
 // authStore struct.
@@ -1091,4 +1099,266 @@ func (s *authStore) GetUserRolesByRoleID(ctx context.Context, roleID string) ([]
 
 	span.SetStatus(otlpcodes.Ok, "User Roles found in DB Successfully")
 	return userRoles, nil
+}
+
+// Enhanced RBAC Methods
+
+// AssignPermissionsToRole assigns multiple permissions to a role in bulk
+func (s *authStore) AssignPermissionsToRole(ctx context.Context, roleID string, permissionIDs []string) error {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authStore.AssignPermissionsToRole")
+	defer span.End()
+
+	roleIDHex, err := primitive.ObjectIDFromHex(roleID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return err
+	}
+
+	// Prepare bulk insert documents
+	var documents []interface{}
+	for _, permissionID := range permissionIDs {
+		permIDHex, err := primitive.ObjectIDFromHex(permissionID)
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(otlpcodes.Error, err.Error())
+			return err
+		}
+
+		// Check if this role-permission combination already exists
+		count, err := s.rolePermissionsCollection.CountDocuments(ctx, bson.M{
+			"roleId":       roleID,
+			"permissionId": permissionID,
+		})
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(otlpcodes.Error, err.Error())
+			return err
+		}
+
+		// Skip if already exists
+		if count > 0 {
+			continue
+		}
+
+		rolePermission := RolePermission{
+			ID:           primitive.NewObjectID(),
+			RoleID:       roleIDHex.Hex(),
+			PermissionID: permIDHex.Hex(),
+		}
+		documents = append(documents, rolePermission)
+	}
+
+	// If no new permissions to add, return success
+	if len(documents) == 0 {
+		span.SetStatus(otlpcodes.Ok, "No new permissions to assign")
+		return nil
+	}
+
+	// Bulk insert
+	_, err = s.rolePermissionsCollection.InsertMany(ctx, documents)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permissions assigned to role successfully")
+	return nil
+}
+
+// RemovePermissionFromRole removes a specific permission from a role
+func (s *authStore) RemovePermissionFromRole(ctx context.Context, roleID string, permissionID string) error {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authStore.RemovePermissionFromRole")
+	defer span.End()
+
+	result, err := s.rolePermissionsCollection.DeleteOne(ctx, bson.M{
+		"roleId":       roleID,
+		"permissionId": permissionID,
+	})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return err
+	}
+
+	if result.DeletedCount == 0 {
+		err = errors.New("role-permission mapping not found")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permission removed from role successfully")
+	return nil
+}
+
+// RemoveRoleFromUser removes a role from a user
+func (s *authStore) RemoveRoleFromUser(ctx context.Context, userID string, roleID string) error {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authStore.RemoveRoleFromUser")
+	defer span.End()
+
+	result, err := s.userRolesCollection.DeleteOne(ctx, bson.M{
+		"userId": userID,
+		"roleId": roleID,
+	})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return err
+	}
+
+	if result.DeletedCount == 0 {
+		err = errors.New("user-role mapping not found")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Role removed from user successfully")
+	return nil
+}
+
+// GetPermissionsByRoleID retrieves all permissions for a specific role
+func (s *authStore) GetPermissionsByRoleID(ctx context.Context, roleID string) ([]Permission, error) {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authStore.GetPermissionsByRoleID")
+	defer span.End()
+
+	// Get all role-permission mappings for this role
+	var rolePermissions []RolePermission
+	cursor, err := s.rolePermissionsCollection.Find(ctx, bson.M{"roleId": roleID})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	err = cursor.All(ctx, &rolePermissions)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	// Extract permission IDs
+	permissionIDs := make([]primitive.ObjectID, 0, len(rolePermissions))
+	for _, rp := range rolePermissions {
+		permID, err := primitive.ObjectIDFromHex(rp.PermissionID)
+		if err != nil {
+			continue
+		}
+		permissionIDs = append(permissionIDs, permID)
+	}
+
+	// If no permissions, return empty slice
+	if len(permissionIDs) == 0 {
+		span.SetStatus(otlpcodes.Ok, "No permissions found for role")
+		return []Permission{}, nil
+	}
+
+	// Get all permissions by IDs
+	var permissions []Permission
+	cursor, err = s.permissionsCollection.Find(ctx, bson.M{"_id": bson.M{"$in": permissionIDs}})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	err = cursor.All(ctx, &permissions)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permissions retrieved successfully")
+	return permissions, nil
+}
+
+// GetRolesByUserID retrieves all roles assigned to a user
+func (s *authStore) GetRolesByUserID(ctx context.Context, userID string) ([]Role, error) {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authStore.GetRolesByUserID")
+	defer span.End()
+
+	// Get all user-role mappings for this user
+	var userRoles []UserRole
+	cursor, err := s.userRolesCollection.Find(ctx, bson.M{"userId": userID})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	err = cursor.All(ctx, &userRoles)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	// Extract role IDs
+	roleIDs := make([]primitive.ObjectID, 0, len(userRoles))
+	for _, ur := range userRoles {
+		roleID, err := primitive.ObjectIDFromHex(ur.RoleID)
+		if err != nil {
+			continue
+		}
+		roleIDs = append(roleIDs, roleID)
+	}
+
+	// If no roles, return empty slice
+	if len(roleIDs) == 0 {
+		span.SetStatus(otlpcodes.Ok, "No roles found for user")
+		return []Role{}, nil
+	}
+
+	// Get all roles by IDs
+	var roles []Role
+	cursor, err = s.rolesCollection.Find(ctx, bson.M{"_id": bson.M{"$in": roleIDs}})
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	err = cursor.All(ctx, &roles)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Roles retrieved successfully")
+	return roles, nil
+}
+
+// GetPermissionByID retrieves a permission by its ID
+func (s *authStore) GetPermissionByID(ctx context.Context, permissionID string) (*Permission, error) {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authStore.GetPermissionByID")
+	defer span.End()
+
+	permIDHex, err := primitive.ObjectIDFromHex(permissionID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	var permission Permission
+	err = s.permissionsCollection.FindOne(ctx, bson.M{"_id": permIDHex}).Decode(&permission)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permission retrieved successfully")
+	return &permission, nil
 }

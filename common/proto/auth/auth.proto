@@ -225,6 +225,48 @@ message GetUserRolesResponse {
     repeated UserRole user_roles = 1;
 }
 
+// --- Permission Management ---
+
+message AssignPermissionsToRolePayload {
+    string role_id = 1;
+    repeated string permission_ids = 2;
+}
+
+message AssignRoleToUserPayload {
+    string user_id = 1;
+    string role_id = 2;
+}
+
+message RemovePermissionFromRolePayload {
+    string role_id = 1;
+    string permission_id = 2;
+}
+
+message RemoveRoleFromUserPayload {
+    string user_id = 1;
+    string role_id = 2;
+}
+
+message GetRolePermissionsPayload {
+    string role_id = 1;
+}
+
+message GetRolePermissionsResponse {
+    repeated Permission permissions = 1;
+}
+
+message CheckPermissionRequest {
+    string user_id = 1;
+    string resource = 2;
+    string action = 3;
+}
+
+message CheckPermissionResponse {
+    bool allowed = 1;
+    string message = 2;
+}
+
+
 message RevokeAccessRequest {
     string userId = 1;
     string companyId = 2;
@@ -258,6 +300,20 @@ message DeleteCompanyPayload {
 }
 
 message DeleteCompanyResponse {
+    string message = 1;
+}
+
+message GrantCompanyAccessPayload {
+    string user_id = 1;
+    repeated string company_ids = 2;
+}
+
+message RevokeCompanyAccessPayload {
+    string user_id = 1;
+    repeated string company_ids = 2;
+}
+
+message RevokeCompanyAccessResponse {
     string message = 1;
 }
 
@@ -313,7 +369,8 @@ service AuthService {
     rpc LoginUser(LoginUserPayload) returns (LoginUserResponse);
     rpc LogoutUser(LogoutUserPayload) returns (google.protobuf.Empty);
     rpc GetUserByIdentifier(GetUserByIdentifierPayload) returns (User);
-    rpc GetUserById(GetUserByIdPayload) returns (User);
+    rpc GetUserByID(GetUserByIdPayload) returns (User);
+
     rpc UpdateUser(UpdateUserPayload) returns (User);
     rpc DeleteUser(DeleteUserPayload) returns (DeleteUserResponse);
 
@@ -326,7 +383,7 @@ service AuthService {
     rpc RegisterRole(RoleRegisterPayload) returns (Role);
     rpc GetRoles(google.protobuf.Empty) returns (RoleList);
     rpc GetRoleByIdentifier(GetRoleByIdentifierPayload) returns (Role);
-    rpc GetRoleById(GetRoleByIdPayload) returns (Role);
+    rpc GetRoleByID(GetRoleByIdPayload) returns (Role);
     rpc UpdateRole(UpdateRolePayload) returns (google.protobuf.Empty);
     rpc DeleteRole(DeleteRolePayload) returns (google.protobuf.Empty);
 
@@ -341,5 +398,18 @@ service AuthService {
     // Account Management
     rpc ForgotPassword(ForgotPasswordPayload) returns (google.protobuf.Empty);
     rpc ResetPassword(ResetPasswordPayload) returns (google.protobuf.Empty);
+
+    // Admin
+    rpc GrantCompanyAccess(GrantCompanyAccessPayload) returns (User);
+    rpc RevokeCompanyAccess(RevokeCompanyAccessPayload) returns (User);
+
+    // Permission Management
+    rpc AssignPermissionsToRole(AssignPermissionsToRolePayload) returns (google.protobuf.Empty);
+    rpc AssignRoleToUser(AssignRoleToUserPayload) returns (User);
+    rpc RemovePermissionFromRole(RemovePermissionFromRolePayload) returns (google.protobuf.Empty);
+    rpc RemoveRoleFromUser(RemoveRoleFromUserPayload) returns (google.protobuf.Empty);
+    rpc GetRolePermissions(GetRolePermissionsPayload) returns (GetRolePermissionsResponse);
+    rpc GetUserPermissions(GetUserPermissionsPayload) returns (GetUserPermissionsResponse);
+    rpc CheckUserPermission(CheckPermissionRequest) returns (CheckPermissionResponse);
 
 }

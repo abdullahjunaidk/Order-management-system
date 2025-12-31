@@ -2,6 +2,7 @@ package auth_controller
 
 import (
 	"common/helpers/password"
+	"errors"
 	"gateway/models/auth_models"
 	"net/http"
 
@@ -356,5 +357,51 @@ func (ac *AuthController) RefreshAccessToken(c *gin.Context) {
 		},
 		AccessToken:  res.AccessToken,
 		RefreshToken: res.RefreshToken,
+	})
+}
+
+// GetUserByID godoc
+// @Summary 			Get User by ID
+// @Description 		Get a User by their ID
+// @Tags 				Auth
+// @Accept 				json
+// @Produce 			json
+// @Param 				userId path string true "User ID"
+// @Success 			200 {object} auth_models.User "Successfully retrieved user"
+// @Failure 			400 {object} auth_models.ErrorResponse "Failed to get user"
+// @Failure 			500 {object} auth_models.ErrorResponse "Failed to get user"
+// @Router 				/auth/user/{userId} [get]
+func (ac *AuthController) GetUserByID(c *gin.Context) {
+	tracer := otel.Tracer("gateway-service")
+	ctx := c.Request.Context()
+	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.GetUserByID")
+	defer span.End()
+
+	userId := c.Param("userId")
+	if userId == "" {
+		span.RecordError(errors.New("user ID is required"))
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "User ID is required"})
+		return
+	}
+
+	res, err := ac.client.GetUserByID(ctx, userId)
+	if err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{Message: "Failed to get user", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, auth_models.User{
+		ID:           res.Id,
+		Name:         res.Name,
+		Username:     res.Username,
+		Email:        res.Email,
+		Phone:        res.Phone,
+		Incentive:    res.Incentive,
+		IsActive:     res.IsActive,
+		IsSuperAdmin: res.IsSuperAdmin,
+		CompanyIds:   res.CompanyIds,
+		CreatedAt:    res.CreatedAt.AsTime(),
+		UpdatedAt:    res.UpdatedAt.AsTime(),
 	})
 }

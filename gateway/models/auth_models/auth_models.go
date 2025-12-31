@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-
 // Customer struct.
 // This struct is used to represent a customer.
 //
@@ -19,7 +18,7 @@ import (
 type Customer struct {
 	ID         string `json:"id,omitempty"`
 	Name       string `json:"name" validate:"required" example:"johndoe"`
-	Phone      int64  `json:"phone" validate:"required,min=10,max=10" example:"9876543210"`
+	Phone      int64  `json:"phone" validate:"required,min=6000000000,max=9999999999" example:"9876543210"`
 	PostOffice string
 	PinCode    int32
 	State      string
@@ -49,29 +48,28 @@ type ErrorResponse struct {
 //   - CreatedAt (time.Time): The created at.
 //   - UpdatedAt (time.Time): The updated at.
 type Company struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name,omitempty"`
-	Description string   `json:"description,omitempty"`
-	IsActive  bool      `json:"is_active"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID          string    `json:"id"`
+	Name        string    `json:"name,omitempty"`
+	Description string    `json:"description,omitempty"`
+	IsActive    bool      `json:"is_active"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 type CompanyRegisterPayload struct {
-	Name         string `json:"name" validate:"required,min=3,max=20" example:"Nike"`
-	Description  string `json:"description,omitempty"`
+	Name        string `json:"name" validate:"required,min=3,max=20" example:"Nike"`
+	Description string `json:"description,omitempty"`
 }
 
 type CompanyRegisterSuccessResponse struct {
-	Message string `json:"message" example:"Company Registered Successfully!"`
-	Company Company  `json:"company"`
+	Message string  `json:"message" example:"Company Registered Successfully!"`
+	Company Company `json:"company"`
 }
 
 type CompanyRegisterErrorResponse struct {
 	Message string `json:"message" example:"Failed to Register Company!"`
 	Error   string `json:"error" example:"<error_message>"`
 }
-
 
 // ResendActivationEmailPayload struct.
 // This struct is used to represent a user resend activation email payload.
@@ -163,11 +161,6 @@ type ResetPasswordErrorResponse struct {
 	Message string `json:"message" example:"Failed to Reset Password!"`
 	Error   string `json:"error" example:"<error_message>"`
 }
-
-
-
-
-
 
 // UnauthorizedErrorResponse struct.
 // This struct is used to represent an unauthorized error response.

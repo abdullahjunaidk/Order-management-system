@@ -148,6 +148,28 @@ func (c *ProductClient) GetProductByIDAndCompanyID(ctx context.Context, productI
 	return res, nil
 }
 
+func (c *ProductClient) GetProductByID(ctx context.Context, productId string) (*productProto.Product, error) {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "ProductClient.GetProductByID")
+	defer span.End()
+
+	req := &productProto.GetProductByIDPayload{
+		Id: productId,
+	}
+
+	res, err := c.service.GetProductByID(ctx, req)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+
+		c.log.WithFields(logrus.Fields{"id": productId, "error": err}).Error("Failed to Get Product!")
+		return nil, err
+	}
+
+	c.log.WithFields(logrus.Fields{"id": productId}).Info("Product Retrieved Successfully!")
+	return res, nil
+}
+
 // UpdateProduct method.
 // This method is used to update a product.
 //

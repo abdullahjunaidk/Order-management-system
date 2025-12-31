@@ -14,19 +14,19 @@ import "time"
 //   - Incentive (int64): The incentive.
 //   - IsActive (bool): The is active.
 type User struct {
-	ID                 string       `json:"id"`
-	Name               string       `json:"name" validate:"required" example:"johndoe"`
-	Username           string       `json:"username" validate:"required,min=3,max=20" example:"johndoe"`
-	Email              string       `json:"email" validate:"required,email" example:"johndoe@example.com"`
-	Phone              int64        `json:"phone" validate:"required, len=10" example:"9876543210"`
-	Incentive          int64        `json:"incentive"`
-	IsSuperAdmin       bool         `json:"is_super_admin"`
-	IsActive           bool         `json:"is_active"`
-	CompanyIds         []string     `json:"company_ids"`
-	CreatedAt          time.Time    `json:"created_at"`
-	UpdatedAt          time.Time    `json:"updated_at"`
-	ActivationToken    string       `json:"-" validate:"omitempty"`
-	PasswordResetToken string       `json:"-" validate:"omitempty"`
+	ID                 string    `json:"id"`
+	Name               string    `json:"name" validate:"required" example:"johndoe"`
+	Username           string    `json:"username" validate:"required,min=3,max=20" example:"johndoe"`
+	Email              string    `json:"email" validate:"required,email" example:"johndoe@example.com"`
+	Phone              int64     `json:"phone" validate:"required,min=6000000000,max=9999999999" example:"9876543210"`
+	Incentive          int64     `json:"incentive"`
+	IsSuperAdmin       bool      `json:"is_super_admin"`
+	IsActive           bool      `json:"is_active"`
+	CompanyIds         []string  `json:"company_ids"`
+	CreatedAt          time.Time `json:"created_at"`
+	UpdatedAt          time.Time `json:"updated_at"`
+	ActivationToken    string    `json:"-" validate:"omitempty"`
+	PasswordResetToken string    `json:"-" validate:"omitempty"`
 }
 
 // EmployeeRegisterPayload struct.
@@ -42,7 +42,7 @@ type UserRegisterPayload struct {
 	UserName     string   `json:"username" validate:"required,min=3,max=20" example:"johndoeee"`
 	Name         string   `json:"name" validate:"required" example:"johndoe"`
 	Email        string   `json:"email" validate:"required,email" example:"johndoe@example.com"`
-	Phone        int64    `json:"phone" validate:"required,len=10" example:"9876543210"`
+	Phone        int64    `json:"phone" validate:"required,min=1000000000,max=9999999999" example:"9876543210"`
 	PasswordHash string   `json:"password" validate:"required,min=8" example:"strong@password"`
 	CompanyIds   []string `json:"companyIds"`
 }
@@ -187,5 +187,38 @@ type UserRefreshAccessTokenSuccessResponse struct {
 //   - Error (string): The error.
 type UserRefreshAccessTokenErrorResponse struct {
 	Message string `json:"message" example:"Failed to Refresh Employee Access Token!"`
+	Error   string `json:"error" example:"<error_message>"`
+}
+
+// GrantCompanyAccessPayload struct.
+// This struct is used to represent a grant company access payload.
+//
+// Attributes:
+//   - UserID (string): The user ID.
+//   - CompanyIDs ([]string): The company IDs.
+type GrantCompanyAccessPayload struct {
+	UserID     string   `json:"user_id" validate:"required" example:"67adca0b4e864cfffb002299"`
+	CompanyIDs []string `json:"company_ids" validate:"required" example:"[\"67adca0b4e864cfffb002299\"]"`
+}
+
+// GrantCompanyAccessSuccessResponse struct.
+// This struct is used to represent a grant company access success response.
+//
+// Attributes:
+//   - Message (string): The message.
+//   - User (User): The user.
+type GrantCompanyAccessSuccessResponse struct {
+	Message string `json:"message" example:"Company Access Granted Successfully!"`
+	User    User   `json:"user"`
+}
+
+// GrantCompanyAccessErrorResponse struct.
+// This struct is used to represent a grant company access error response.
+//
+// Attributes:
+//   - Message (string): The message.
+//   - Error (string): The error.
+type GrantCompanyAccessErrorResponse struct {
+	Message string `json:"message" example:"Failed to Grant Company Access!"`
 	Error   string `json:"error" example:"<error_message>"`
 }

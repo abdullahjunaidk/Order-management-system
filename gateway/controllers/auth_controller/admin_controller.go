@@ -1,6 +1,8 @@
 package auth_controller
 
 import (
+	authProto "common/proto/auth"
+	"errors"
 	"gateway/models/auth_models"
 	"net/http"
 
@@ -143,167 +145,97 @@ func (ac *AuthController) LogoutAdmin(c *gin.Context) {
 	})
 }
 
-// func (ac *AuthController) EmployeeGrantAccess(c *gin.Context) {
-// 	tracer := otel.Tracer("gateway-service")
+func (ac *AuthController) GrantCompanyAccess(c *gin.Context) {
+	tracer := otel.Tracer("gateway-service")
 
-// 	ctx := c.Request.Context()
-// 	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.EmployeeGrantAccess")
-// 	defer span.End()
+	ctx := c.Request.Context()
+	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.GrantCompanyAccess")
+	defer span.End()
 
-// 	var req auth_models.EmployeeBrandAccessRegisterPayload
-// 	if err := c.ShouldBindJSON(&req); err != nil {
-// 		ac.logger.WithFields(logrus.Fields{"error": err}).Error("Failed to Grant Employee Access!")
+	var req auth_models.GrantCompanyAccessPayload
+	if err := c.ShouldBindJSON(&req); err != nil {
+		ac.logger.WithFields(logrus.Fields{"error": err}).Error("Failed to Grant Company Access!")
 
-// 		span.RecordError(err)
-// 		span.SetStatus(otlpcodes.Error, err.Error())
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
 
-// 		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{
-// 			Message: "Failed to Grant Employee Access!",
-// 			Error:   err.Error(),
-// 		})
-// 		return
-// 	}
+		c.JSON(http.StatusBadRequest, auth_models.GrantCompanyAccessErrorResponse{
+			Message: "Failed to Grant Company Access!",
+			Error:   err.Error(),
+		})
+		return
+	}
 
-// 	if err := Validate.Struct(req); err != nil {
-// 		ac.logger.WithFields(logrus.Fields{"error": err}).Error("Failed to Grant Employee Access!")
+	if err := Validate.Struct(req); err != nil {
+		ac.logger.WithFields(logrus.Fields{"error": err}).Error("Failed to Grant Company Access!")
 
-// 		span.RecordError(err)
-// 		span.SetStatus(otlpcodes.Error, err.Error())
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
 
-// 		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{
-// 			Message: "Failed to Grant Employee Access!",
-// 			Error:   err.Error(),
-// 		})
-// 		return
-// 	}
+		c.JSON(http.StatusBadRequest, auth_models.GrantCompanyAccessErrorResponse{
+			Message: "Failed to Grant Company Access!",
+			Error:   err.Error(),
+		})
+		return
+	}
 
-// 	admin, exists := c.Get("user")
-// 	if !exists {
-// 		ac.logger.Error("Failed to Grant Employee Access!")
+	user, exists := c.Get("user")
+	if !exists {
+		ac.logger.Error("Failed to Grant Company Access!")
 
-// 		span.RecordError(errors.New("user not found"))
-// 		span.SetStatus(otlpcodes.Error, "user not found")
+		span.RecordError(errors.New("user not found"))
+		span.SetStatus(otlpcodes.Error, "user not found")
 
-// 		c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
-// 			Message: "Unauthorized!",
-// 			Error:   "user not found",
-// 		})
-// 		return
-// 	}
+		c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
+			Message: "Unauthorized!",
+			Error:   "user not found",
+		})
+		return
+	}
 
-// 	authUser := admin.(*authProto.Employee)
-// 	if authUser.Role != "admin" {
-// 		ac.logger.Error("Failed to Grant Employee Access!")
+	authUser := user.(*authProto.User)
+	if !authUser.IsSuperAdmin {
+		ac.logger.Error("Failed to Grant Company Access!")
 
-// 		span.RecordError(errors.New("user is not an admin"))
-// 		span.SetStatus(otlpcodes.Error, "user is not an admin")
+		span.RecordError(errors.New("user is not an admin"))
+		span.SetStatus(otlpcodes.Error, "user is not an admin")
 
-// 		c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
-// 			Message: "Unauthorized!",
-// 			Error:   "only admins can Grant access to employee",
-// 		})
-// 		return
-// 	}
+		c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
+			Message: "Unauthorized!",
+			Error:   "only admins can grant access to company",
+		})
+		return
+	}
 
-// 	var access []*authProto.BrandAccess
-// 	for _, reqAccess := range req.Access {
-// 		access = append(access, &authProto.BrandAccess{
-// 			BrandId: reqAccess.BrandID,
-// 			RoleId:  reqAccess.Roles,
-// 		})
-// 	}
+	res, err := ac.client.GrantCompanyAccess(ctx, req.UserID, req.CompanyIDs)
+	if err != nil {
+		ac.logger.WithFields(logrus.Fields{"error": err}).Error("Failed to Grant Company Access!")
 
-// 	res, error := ac.client.EmployeeGrantAccess(ctx, req.EmployeeID, access)
-// 	if error != nil {
-// 		ac.logger.WithFields(logrus.Fields{"error": error}).Error("Failed to Grant Employee Access!")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
 
-// 		span.RecordError(error)
-// 		span.SetStatus(otlpcodes.Error, error.Error())
+		c.JSON(http.StatusInternalServerError, auth_models.GrantCompanyAccessErrorResponse{
+			Message: "Failed to Grant Company Access!",
+			Error:   err.Error(),
+		})
+		return
+	}
 
-// 		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{
-// 			Message: "Failed to Grant Employee Access!",
-// 			Error:   error.Error(),
-// 		})
-// 		return
-// 	}
-
-// 	var ResAccess []auth_models.BrandAccessDTO
-// 	for _, access := range res.Access {
-// 		ResAccess = append(ResAccess, auth_models.BrandAccessDTO{
-// 			BrandID: access.BrandId,
-// 			Roles:   access.RoleId,
-// 		})
-// 	}
-
-// 	span.SetStatus(otlpcodes.Ok, "Employee Access Granted Successfully!")
-// 	c.JSON(http.StatusOK, auth_models.EmployeeGrandAccessSuccessResponse{
-// 		Message: "Employee Access Granted Successfully!",
-// 		Employee: auth_models.Employee{
-// 			ID:        res.Id,
-// 			UserName:  res.Username,
-// 			Name:      res.Name,
-// 			Phone:     res.Phone,
-// 			Email:     res.Email,
-// 			Incentive: res.Incentive,
-// 			Permission: res.Permissions,
-// 			IsActive:  res.IsActive,
-// 			Role:      res.Role,
-// 			CreatedAt: res.CreatedAt.AsTime(),
-// 			UpdatedAt: res.UpdatedAt.AsTime(),
-// 		},
-// 	})
-// }
-
-// func (ac *AuthController) GrandAccess(c *gin.Context) {
-// 	tracer := otel.Tracer("gateway-service")
-
-// 	ctx := c.Request.Context()
-// 	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.GrandAccess")
-// 	defer span.End()
-
-// 	var req auth_models.EmployeeBrandAccessRegisterPayload
-// 	if err := c.ShouldBindJSON(&req); err != nil {
-// 		ac.logger.WithFields(logrus.Fields{"error": err}).Error("Failed to Grand Access!")
-
-// 		span.RecordError(err)
-// 		span.SetStatus(otlpcodes.Error, err.Error())
-
-// 		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{
-// 			Message: "Failed to Grand Access!",
-// 			Error:   err.Error(),
-// 		})
-// 		return
-// 	}
-
-// 	if err := Validate.Struct(req); err != nil {
-// 		ac.logger.WithFields(logrus.Fields{"error": err}).Error("Failed to Grand Access!")
-
-// 		span.RecordError(err)
-// 		span.SetStatus(otlpcodes.Error, err.Error())
-
-// 		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{
-// 			Message: "Failed to Grand Access!",
-// 			Error:   err.Error(),
-// 		})
-// 		return
-// 	}
-
-// 	res, error := ac.client.GrandAccess(ctx, req.EmployeeID, req.Access)
-// 	if error != nil {
-// 		ac.logger.WithFields(logrus.Fields{"error": error}).Error("Failed to Grand Access!")
-
-// 		span.RecordError(error)
-// 		span.SetStatus(otlpcodes.Error, error.Error())
-
-// 		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{
-// 			Message: "Failed to Grand Access!",
-// 			Error:   error.Error(),
-// 		})
-// 		return
-// 	}
-
-// 	span.SetStatus(otlpcodes.Ok, "Access Granted Successfully!")
-// 	c.JSON(http.StatusOK, auth_models.ErrorResponse{
-// 		Message: "Access Granted Successfully!",
-// 	})
-// }
+	span.SetStatus(otlpcodes.Ok, "Company Access Granted Successfully!")
+	c.JSON(http.StatusOK, auth_models.GrantCompanyAccessSuccessResponse{
+		Message: "Company Access Granted Successfully!",
+		User: auth_models.User{
+			ID:           res.Id,
+			Name:         res.Name,
+			Username:     res.Username,
+			Email:        res.Email,
+			Phone:        res.Phone,
+			Incentive:    res.Incentive,
+			IsActive:     res.IsActive,
+			IsSuperAdmin: res.IsSuperAdmin,
+			CompanyIds:   res.CompanyIds,
+			CreatedAt:    res.CreatedAt.AsTime(),
+			UpdatedAt:    res.UpdatedAt.AsTime(),
+		},
+	})
+}

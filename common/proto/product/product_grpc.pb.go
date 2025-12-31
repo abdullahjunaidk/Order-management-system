@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	ProductService_CreateProduct_FullMethodName              = "/productProto.ProductService/CreateProduct"
 	ProductService_GetProductByIDAndCompanyID_FullMethodName = "/productProto.ProductService/GetProductByIDAndCompanyID"
+	ProductService_GetProductByID_FullMethodName             = "/productProto.ProductService/GetProductByID"
 	ProductService_UpdateProduct_FullMethodName              = "/productProto.ProductService/UpdateProduct"
 	ProductService_ListProductsByCompanyID_FullMethodName    = "/productProto.ProductService/ListProductsByCompanyID"
 	ProductService_DeleteProduct_FullMethodName              = "/productProto.ProductService/DeleteProduct"
@@ -36,6 +37,7 @@ const (
 type ProductServiceClient interface {
 	CreateProduct(ctx context.Context, in *ProductCreatePayload, opts ...grpc.CallOption) (*Product, error)
 	GetProductByIDAndCompanyID(ctx context.Context, in *GetProductByIDAndCompanyIDPayload, opts ...grpc.CallOption) (*Product, error)
+	GetProductByID(ctx context.Context, in *GetProductByIDPayload, opts ...grpc.CallOption) (*Product, error)
 	UpdateProduct(ctx context.Context, in *ProductUpdatePayload, opts ...grpc.CallOption) (*Product, error)
 	ListProductsByCompanyID(ctx context.Context, in *ListProductsByCompanyIDPayload, opts ...grpc.CallOption) (*ListProductsResponse, error)
 	DeleteProduct(ctx context.Context, in *DeleteProductPayload, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -64,6 +66,16 @@ func (c *productServiceClient) GetProductByIDAndCompanyID(ctx context.Context, i
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Product)
 	err := c.cc.Invoke(ctx, ProductService_GetProductByIDAndCompanyID_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productServiceClient) GetProductByID(ctx context.Context, in *GetProductByIDPayload, opts ...grpc.CallOption) (*Product, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Product)
+	err := c.cc.Invoke(ctx, ProductService_GetProductByID_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -118,6 +130,7 @@ func (c *productServiceClient) SetProductPriceID(ctx context.Context, in *SetPro
 type ProductServiceServer interface {
 	CreateProduct(context.Context, *ProductCreatePayload) (*Product, error)
 	GetProductByIDAndCompanyID(context.Context, *GetProductByIDAndCompanyIDPayload) (*Product, error)
+	GetProductByID(context.Context, *GetProductByIDPayload) (*Product, error)
 	UpdateProduct(context.Context, *ProductUpdatePayload) (*Product, error)
 	ListProductsByCompanyID(context.Context, *ListProductsByCompanyIDPayload) (*ListProductsResponse, error)
 	DeleteProduct(context.Context, *DeleteProductPayload) (*emptypb.Empty, error)
@@ -137,6 +150,9 @@ func (UnimplementedProductServiceServer) CreateProduct(context.Context, *Product
 }
 func (UnimplementedProductServiceServer) GetProductByIDAndCompanyID(context.Context, *GetProductByIDAndCompanyIDPayload) (*Product, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetProductByIDAndCompanyID not implemented")
+}
+func (UnimplementedProductServiceServer) GetProductByID(context.Context, *GetProductByIDPayload) (*Product, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetProductByID not implemented")
 }
 func (UnimplementedProductServiceServer) UpdateProduct(context.Context, *ProductUpdatePayload) (*Product, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateProduct not implemented")
@@ -203,6 +219,24 @@ func _ProductService_GetProductByIDAndCompanyID_Handler(srv interface{}, ctx con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductServiceServer).GetProductByIDAndCompanyID(ctx, req.(*GetProductByIDAndCompanyIDPayload))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductService_GetProductByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductByIDPayload)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).GetProductByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductService_GetProductByID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).GetProductByID(ctx, req.(*GetProductByIDPayload))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -293,6 +327,10 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProductByIDAndCompanyID",
 			Handler:    _ProductService_GetProductByIDAndCompanyID_Handler,
+		},
+		{
+			MethodName: "GetProductByID",
+			Handler:    _ProductService_GetProductByID_Handler,
 		},
 		{
 			MethodName: "UpdateProduct",

@@ -152,17 +152,26 @@ func (pc *ProductController) CreateProduct(c *gin.Context) {
 
 	authUser := user.(*authProto.User)
 	if !authUser.IsSuperAdmin {
+		hasAccess := false
+		for _, companyID := range authUser.CompanyIds {
+			if companyID == req.CompanyID {
+				hasAccess = true
+				break
+			}
+		}
 
-		pc.logger.Error("Failed to Create Product!")
+		if !hasAccess {
+			pc.logger.Error("Failed to Create Product!")
 
-		span.RecordError(errors.New("User doesn't have access to this company"))
-		span.SetStatus(otlpcodes.Error, "User doesn't have access to this company")
+			span.RecordError(errors.New("User doesn't have access to this company"))
+			span.SetStatus(otlpcodes.Error, "User doesn't have access to this company")
 
-		c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
-			Message: "Unauthorized!",
-			Error:   "User doesn't have access to this company",
-		})
-		return
+			c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
+				Message: "Unauthorized!",
+				Error:   "User doesn't have access to this company",
+			})
+			return
+		}
 	}
 
 	res, err := pc.productClient.CreateProduct(ctx, req.CompanyID, req.Name, req.Description, req.Category, req.Price)
@@ -263,16 +272,40 @@ func (pc *ProductController) UpdateProduct(c *gin.Context) {
 
 	authUser := user.(*authProto.User)
 	if !authUser.IsSuperAdmin {
-		pc.logger.Error("Failed to Update Product!")
+		// Fetch product to check its company ID
+		product, err := pc.productClient.GetProductByID(ctx, productID)
+		if err != nil {
+			pc.logger.WithFields(logrus.Fields{"error": err}).Error("Failed to Get Product for Access Check!")
+			span.RecordError(err)
+			span.SetStatus(otlpcodes.Error, err.Error())
 
-		span.RecordError(errors.New("user is not a vendor"))
-		span.SetStatus(otlpcodes.Error, "user is not a vendor")
+			c.JSON(http.StatusInternalServerError, product_models.ProductUpdateErrorResponse{
+				Message: "Failed to Update Product!",
+				Error:   "could not verify product ownership",
+			})
+			return
+		}
 
-		c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
-			Message: "Unauthorized!",
-			Error:   "only vendors can update products",
-		})
-		return
+		hasAccess := false
+		for _, companyID := range authUser.CompanyIds {
+			if companyID == product.CompanyId {
+				hasAccess = true
+				break
+			}
+		}
+
+		if !hasAccess {
+			pc.logger.Error("Failed to Update Product!")
+
+			span.RecordError(errors.New("User doesn't have access to this company"))
+			span.SetStatus(otlpcodes.Error, "User doesn't have access to this company")
+
+			c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
+				Message: "Unauthorized!",
+				Error:   "User doesn't have access to this company",
+			})
+			return
+		}
 	}
 
 	res, err := pc.productClient.UpdateProduct(ctx, productID, authUser.Id, req.Name, req.Description, req.Category, req.Price)
@@ -357,16 +390,26 @@ func (pc *ProductController) ListProductsByCompanyID(c *gin.Context) {
 
 	authUser := user.(*authProto.User)
 	if !authUser.IsSuperAdmin {
-		pc.logger.Error("Failed to List Products!")
+		hasAccess := false
+		for _, companyID := range authUser.CompanyIds {
+			if companyID == req.CompanyID {
+				hasAccess = true
+				break
+			}
+		}
 
-		span.RecordError(errors.New("user is not a vendor"))
-		span.SetStatus(otlpcodes.Error, "user is not a vendor")
+		if !hasAccess {
+			pc.logger.Error("Failed to List Products!")
 
-		c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
-			Message: "Unauthorized!",
-			Error:   "only vendors can list products",
-		})
-		return
+			span.RecordError(errors.New("user is not a vendor"))
+			span.SetStatus(otlpcodes.Error, "user is not a vendor")
+
+			c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
+				Message: "Unauthorized!",
+				Error:   "only vendors can list products",
+			})
+			return
+		}
 	}
 
 	limit := req.Limit
@@ -471,16 +514,40 @@ func (pc *ProductController) DeleteProduct(c *gin.Context) {
 
 	authUser := user.(*authProto.User)
 	if !authUser.IsSuperAdmin {
-		pc.logger.Error("Failed to Delete Product!")
+		// Fetch product to check its company ID
+		product, err := pc.productClient.GetProductByID(ctx, productID)
+		if err != nil {
+			pc.logger.WithFields(logrus.Fields{"error": err}).Error("Failed to Get Product for Access Check!")
+			span.RecordError(err)
+			span.SetStatus(otlpcodes.Error, err.Error())
 
-		span.RecordError(errors.New("user is not a admin"))
-		span.SetStatus(otlpcodes.Error, "user is not a admin")
+			c.JSON(http.StatusInternalServerError, product_models.DeleteProductErrorResponse{
+				Message: "Failed to Delete Product!",
+				Error:   "could not verify product ownership",
+			})
+			return
+		}
 
-		c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
-			Message: "Unauthorized!",
-			Error:   "only admins can delete products",
-		})
-		return
+		hasAccess := false
+		for _, companyID := range authUser.CompanyIds {
+			if companyID == product.CompanyId {
+				hasAccess = true
+				break
+			}
+		}
+
+		if !hasAccess {
+			pc.logger.Error("Failed to Delete Product!")
+
+			span.RecordError(errors.New("User doesn't have access to this company"))
+			span.SetStatus(otlpcodes.Error, "User doesn't have access to this company")
+
+			c.JSON(http.StatusUnauthorized, auth_models.UnauthorizedErrorResponse{
+				Message: "Unauthorized!",
+				Error:   "User doesn't have access to this company",
+			})
+			return
+		}
 	}
 
 	if productID == "" {

@@ -71,11 +71,11 @@ type RolePermission struct {
 // --- User Payloads ---
 
 type RegisterUserPayload struct {
-	Name         string `json:"name"`
-	Username     string `json:"username"`
-	Email        string `json:"email"`
-	Phone        int64  `json:"phone"`
-	PasswordHash string `json:"password_hash"`
+	Name         string   `json:"name"`
+	Username     string   `json:"username"`
+	Email        string   `json:"email"`
+	Phone        int64    `json:"phone"`
+	PasswordHash string   `json:"password_hash"`
 	CompanyIDs   []string `json:"company_ids"`
 }
 
@@ -108,6 +108,11 @@ type UserRefreshAccessTokenPayload struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
+type GrantCompanyAccessPayload struct {
+	UserID     string   `json:"user_id"`
+	CompanyIDs []string `json:"company_ids"`
+}
+
 type UserLoginResponse struct {
 	User         User   `json:"user"`
 	AccessToken  string `json:"access_token"`
@@ -117,9 +122,9 @@ type UserLoginResponse struct {
 // --- Role & Permission Payloads ---
 
 type RoleRegisterPayload struct {
-	Name         string             `json:"name"`
-	Description  string             `json:"description"`
-	Permissions  []types.Permission `json:"permissions"`
+	Name        string             `json:"name"`
+	Description string             `json:"description"`
+	Permissions []types.Permission `json:"permissions"`
 }
 
 type PermissionRegisterPayload struct {

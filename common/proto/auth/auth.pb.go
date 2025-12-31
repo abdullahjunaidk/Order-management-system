@@ -2099,6 +2099,414 @@ func (x *GetUserRolesResponse) GetUserRoles() []*UserRole {
 	return nil
 }
 
+type AssignPermissionsToRolePayload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoleId        string                 `protobuf:"bytes,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	PermissionIds []string               `protobuf:"bytes,2,rep,name=permission_ids,json=permissionIds,proto3" json:"permission_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AssignPermissionsToRolePayload) Reset() {
+	*x = AssignPermissionsToRolePayload{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[37]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AssignPermissionsToRolePayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AssignPermissionsToRolePayload) ProtoMessage() {}
+
+func (x *AssignPermissionsToRolePayload) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[37]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AssignPermissionsToRolePayload.ProtoReflect.Descriptor instead.
+func (*AssignPermissionsToRolePayload) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{37}
+}
+
+func (x *AssignPermissionsToRolePayload) GetRoleId() string {
+	if x != nil {
+		return x.RoleId
+	}
+	return ""
+}
+
+func (x *AssignPermissionsToRolePayload) GetPermissionIds() []string {
+	if x != nil {
+		return x.PermissionIds
+	}
+	return nil
+}
+
+type AssignRoleToUserPayload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	RoleId        string                 `protobuf:"bytes,2,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AssignRoleToUserPayload) Reset() {
+	*x = AssignRoleToUserPayload{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AssignRoleToUserPayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AssignRoleToUserPayload) ProtoMessage() {}
+
+func (x *AssignRoleToUserPayload) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AssignRoleToUserPayload.ProtoReflect.Descriptor instead.
+func (*AssignRoleToUserPayload) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *AssignRoleToUserPayload) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *AssignRoleToUserPayload) GetRoleId() string {
+	if x != nil {
+		return x.RoleId
+	}
+	return ""
+}
+
+type RemovePermissionFromRolePayload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoleId        string                 `protobuf:"bytes,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	PermissionId  string                 `protobuf:"bytes,2,opt,name=permission_id,json=permissionId,proto3" json:"permission_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemovePermissionFromRolePayload) Reset() {
+	*x = RemovePermissionFromRolePayload{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[39]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemovePermissionFromRolePayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemovePermissionFromRolePayload) ProtoMessage() {}
+
+func (x *RemovePermissionFromRolePayload) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[39]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemovePermissionFromRolePayload.ProtoReflect.Descriptor instead.
+func (*RemovePermissionFromRolePayload) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{39}
+}
+
+func (x *RemovePermissionFromRolePayload) GetRoleId() string {
+	if x != nil {
+		return x.RoleId
+	}
+	return ""
+}
+
+func (x *RemovePermissionFromRolePayload) GetPermissionId() string {
+	if x != nil {
+		return x.PermissionId
+	}
+	return ""
+}
+
+type RemoveRoleFromUserPayload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	RoleId        string                 `protobuf:"bytes,2,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveRoleFromUserPayload) Reset() {
+	*x = RemoveRoleFromUserPayload{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[40]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveRoleFromUserPayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveRoleFromUserPayload) ProtoMessage() {}
+
+func (x *RemoveRoleFromUserPayload) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[40]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveRoleFromUserPayload.ProtoReflect.Descriptor instead.
+func (*RemoveRoleFromUserPayload) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{40}
+}
+
+func (x *RemoveRoleFromUserPayload) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *RemoveRoleFromUserPayload) GetRoleId() string {
+	if x != nil {
+		return x.RoleId
+	}
+	return ""
+}
+
+type GetRolePermissionsPayload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoleId        string                 `protobuf:"bytes,1,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetRolePermissionsPayload) Reset() {
+	*x = GetRolePermissionsPayload{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[41]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetRolePermissionsPayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRolePermissionsPayload) ProtoMessage() {}
+
+func (x *GetRolePermissionsPayload) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[41]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRolePermissionsPayload.ProtoReflect.Descriptor instead.
+func (*GetRolePermissionsPayload) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *GetRolePermissionsPayload) GetRoleId() string {
+	if x != nil {
+		return x.RoleId
+	}
+	return ""
+}
+
+type GetRolePermissionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Permissions   []*Permission          `protobuf:"bytes,1,rep,name=permissions,proto3" json:"permissions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetRolePermissionsResponse) Reset() {
+	*x = GetRolePermissionsResponse{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[42]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetRolePermissionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRolePermissionsResponse) ProtoMessage() {}
+
+func (x *GetRolePermissionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[42]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRolePermissionsResponse.ProtoReflect.Descriptor instead.
+func (*GetRolePermissionsResponse) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{42}
+}
+
+func (x *GetRolePermissionsResponse) GetPermissions() []*Permission {
+	if x != nil {
+		return x.Permissions
+	}
+	return nil
+}
+
+type CheckPermissionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Resource      string                 `protobuf:"bytes,2,opt,name=resource,proto3" json:"resource,omitempty"`
+	Action        string                 `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CheckPermissionRequest) Reset() {
+	*x = CheckPermissionRequest{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[43]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckPermissionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckPermissionRequest) ProtoMessage() {}
+
+func (x *CheckPermissionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[43]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckPermissionRequest.ProtoReflect.Descriptor instead.
+func (*CheckPermissionRequest) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{43}
+}
+
+func (x *CheckPermissionRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *CheckPermissionRequest) GetResource() string {
+	if x != nil {
+		return x.Resource
+	}
+	return ""
+}
+
+func (x *CheckPermissionRequest) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
+type CheckPermissionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Allowed       bool                   `protobuf:"varint,1,opt,name=allowed,proto3" json:"allowed,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CheckPermissionResponse) Reset() {
+	*x = CheckPermissionResponse{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[44]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CheckPermissionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckPermissionResponse) ProtoMessage() {}
+
+func (x *CheckPermissionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[44]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckPermissionResponse.ProtoReflect.Descriptor instead.
+func (*CheckPermissionResponse) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{44}
+}
+
+func (x *CheckPermissionResponse) GetAllowed() bool {
+	if x != nil {
+		return x.Allowed
+	}
+	return false
+}
+
+func (x *CheckPermissionResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 type RevokeAccessRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
@@ -2109,7 +2517,7 @@ type RevokeAccessRequest struct {
 
 func (x *RevokeAccessRequest) Reset() {
 	*x = RevokeAccessRequest{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[37]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2121,7 +2529,7 @@ func (x *RevokeAccessRequest) String() string {
 func (*RevokeAccessRequest) ProtoMessage() {}
 
 func (x *RevokeAccessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[37]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2134,7 +2542,7 @@ func (x *RevokeAccessRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RevokeAccessRequest.ProtoReflect.Descriptor instead.
 func (*RevokeAccessRequest) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{37}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *RevokeAccessRequest) GetUserId() string {
@@ -2160,7 +2568,7 @@ type RevokeAccessResponse struct {
 
 func (x *RevokeAccessResponse) Reset() {
 	*x = RevokeAccessResponse{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[38]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2172,7 +2580,7 @@ func (x *RevokeAccessResponse) String() string {
 func (*RevokeAccessResponse) ProtoMessage() {}
 
 func (x *RevokeAccessResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[38]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2185,7 +2593,7 @@ func (x *RevokeAccessResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RevokeAccessResponse.ProtoReflect.Descriptor instead.
 func (*RevokeAccessResponse) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{38}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *RevokeAccessResponse) GetMessage() string {
@@ -2205,7 +2613,7 @@ type CompanyRegisterPayload struct {
 
 func (x *CompanyRegisterPayload) Reset() {
 	*x = CompanyRegisterPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[39]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2217,7 +2625,7 @@ func (x *CompanyRegisterPayload) String() string {
 func (*CompanyRegisterPayload) ProtoMessage() {}
 
 func (x *CompanyRegisterPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[39]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2230,7 +2638,7 @@ func (x *CompanyRegisterPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompanyRegisterPayload.ProtoReflect.Descriptor instead.
 func (*CompanyRegisterPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{39}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *CompanyRegisterPayload) GetName() string {
@@ -2256,7 +2664,7 @@ type GetCompanyByIdentifierPayload struct {
 
 func (x *GetCompanyByIdentifierPayload) Reset() {
 	*x = GetCompanyByIdentifierPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[40]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2268,7 +2676,7 @@ func (x *GetCompanyByIdentifierPayload) String() string {
 func (*GetCompanyByIdentifierPayload) ProtoMessage() {}
 
 func (x *GetCompanyByIdentifierPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[40]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2281,7 +2689,7 @@ func (x *GetCompanyByIdentifierPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCompanyByIdentifierPayload.ProtoReflect.Descriptor instead.
 func (*GetCompanyByIdentifierPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{40}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *GetCompanyByIdentifierPayload) GetIdentifier() string {
@@ -2300,7 +2708,7 @@ type GetCompanyByIDPayload struct {
 
 func (x *GetCompanyByIDPayload) Reset() {
 	*x = GetCompanyByIDPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[41]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2312,7 +2720,7 @@ func (x *GetCompanyByIDPayload) String() string {
 func (*GetCompanyByIDPayload) ProtoMessage() {}
 
 func (x *GetCompanyByIDPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[41]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2325,7 +2733,7 @@ func (x *GetCompanyByIDPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCompanyByIDPayload.ProtoReflect.Descriptor instead.
 func (*GetCompanyByIDPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{41}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *GetCompanyByIDPayload) GetId() string {
@@ -2344,7 +2752,7 @@ type GetCompanyResponse struct {
 
 func (x *GetCompanyResponse) Reset() {
 	*x = GetCompanyResponse{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[42]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2356,7 +2764,7 @@ func (x *GetCompanyResponse) String() string {
 func (*GetCompanyResponse) ProtoMessage() {}
 
 func (x *GetCompanyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[42]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2369,7 +2777,7 @@ func (x *GetCompanyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCompanyResponse.ProtoReflect.Descriptor instead.
 func (*GetCompanyResponse) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{42}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *GetCompanyResponse) GetCompany() *Company {
@@ -2388,7 +2796,7 @@ type DeleteCompanyPayload struct {
 
 func (x *DeleteCompanyPayload) Reset() {
 	*x = DeleteCompanyPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[43]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2400,7 +2808,7 @@ func (x *DeleteCompanyPayload) String() string {
 func (*DeleteCompanyPayload) ProtoMessage() {}
 
 func (x *DeleteCompanyPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[43]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2413,7 +2821,7 @@ func (x *DeleteCompanyPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCompanyPayload.ProtoReflect.Descriptor instead.
 func (*DeleteCompanyPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{43}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *DeleteCompanyPayload) GetId() string {
@@ -2432,7 +2840,7 @@ type DeleteCompanyResponse struct {
 
 func (x *DeleteCompanyResponse) Reset() {
 	*x = DeleteCompanyResponse{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[44]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2444,7 +2852,7 @@ func (x *DeleteCompanyResponse) String() string {
 func (*DeleteCompanyResponse) ProtoMessage() {}
 
 func (x *DeleteCompanyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[44]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2457,10 +2865,158 @@ func (x *DeleteCompanyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCompanyResponse.ProtoReflect.Descriptor instead.
 func (*DeleteCompanyResponse) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{44}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *DeleteCompanyResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type GrantCompanyAccessPayload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	CompanyIds    []string               `protobuf:"bytes,2,rep,name=company_ids,json=companyIds,proto3" json:"company_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GrantCompanyAccessPayload) Reset() {
+	*x = GrantCompanyAccessPayload{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[53]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GrantCompanyAccessPayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GrantCompanyAccessPayload) ProtoMessage() {}
+
+func (x *GrantCompanyAccessPayload) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[53]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GrantCompanyAccessPayload.ProtoReflect.Descriptor instead.
+func (*GrantCompanyAccessPayload) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{53}
+}
+
+func (x *GrantCompanyAccessPayload) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GrantCompanyAccessPayload) GetCompanyIds() []string {
+	if x != nil {
+		return x.CompanyIds
+	}
+	return nil
+}
+
+type RevokeCompanyAccessPayload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	CompanyIds    []string               `protobuf:"bytes,2,rep,name=company_ids,json=companyIds,proto3" json:"company_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RevokeCompanyAccessPayload) Reset() {
+	*x = RevokeCompanyAccessPayload{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[54]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RevokeCompanyAccessPayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RevokeCompanyAccessPayload) ProtoMessage() {}
+
+func (x *RevokeCompanyAccessPayload) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[54]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RevokeCompanyAccessPayload.ProtoReflect.Descriptor instead.
+func (*RevokeCompanyAccessPayload) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{54}
+}
+
+func (x *RevokeCompanyAccessPayload) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *RevokeCompanyAccessPayload) GetCompanyIds() []string {
+	if x != nil {
+		return x.CompanyIds
+	}
+	return nil
+}
+
+type RevokeCompanyAccessResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RevokeCompanyAccessResponse) Reset() {
+	*x = RevokeCompanyAccessResponse{}
+	mi := &file_common_proto_auth_auth_proto_msgTypes[55]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RevokeCompanyAccessResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RevokeCompanyAccessResponse) ProtoMessage() {}
+
+func (x *RevokeCompanyAccessResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_common_proto_auth_auth_proto_msgTypes[55]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RevokeCompanyAccessResponse.ProtoReflect.Descriptor instead.
+func (*RevokeCompanyAccessResponse) Descriptor() ([]byte, []int) {
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{55}
+}
+
+func (x *RevokeCompanyAccessResponse) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
@@ -2476,7 +3032,7 @@ type VerifyAccessTokenPayload struct {
 
 func (x *VerifyAccessTokenPayload) Reset() {
 	*x = VerifyAccessTokenPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[45]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2488,7 +3044,7 @@ func (x *VerifyAccessTokenPayload) String() string {
 func (*VerifyAccessTokenPayload) ProtoMessage() {}
 
 func (x *VerifyAccessTokenPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[45]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2501,7 +3057,7 @@ func (x *VerifyAccessTokenPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VerifyAccessTokenPayload.ProtoReflect.Descriptor instead.
 func (*VerifyAccessTokenPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{45}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *VerifyAccessTokenPayload) GetAccessToken() string {
@@ -2520,7 +3076,7 @@ type RefreshAccessTokenPayload struct {
 
 func (x *RefreshAccessTokenPayload) Reset() {
 	*x = RefreshAccessTokenPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[46]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2532,7 +3088,7 @@ func (x *RefreshAccessTokenPayload) String() string {
 func (*RefreshAccessTokenPayload) ProtoMessage() {}
 
 func (x *RefreshAccessTokenPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[46]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2545,7 +3101,7 @@ func (x *RefreshAccessTokenPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefreshAccessTokenPayload.ProtoReflect.Descriptor instead.
 func (*RefreshAccessTokenPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{46}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *RefreshAccessTokenPayload) GetRefreshToken() string {
@@ -2566,7 +3122,7 @@ type ValidateAccessRequest struct {
 
 func (x *ValidateAccessRequest) Reset() {
 	*x = ValidateAccessRequest{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[47]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2578,7 +3134,7 @@ func (x *ValidateAccessRequest) String() string {
 func (*ValidateAccessRequest) ProtoMessage() {}
 
 func (x *ValidateAccessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[47]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2591,7 +3147,7 @@ func (x *ValidateAccessRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValidateAccessRequest.ProtoReflect.Descriptor instead.
 func (*ValidateAccessRequest) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{47}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *ValidateAccessRequest) GetUserId() string {
@@ -2624,7 +3180,7 @@ type ValidateAccessResponse struct {
 
 func (x *ValidateAccessResponse) Reset() {
 	*x = ValidateAccessResponse{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[48]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2636,7 +3192,7 @@ func (x *ValidateAccessResponse) String() string {
 func (*ValidateAccessResponse) ProtoMessage() {}
 
 func (x *ValidateAccessResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[48]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2649,7 +3205,7 @@ func (x *ValidateAccessResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValidateAccessResponse.ProtoReflect.Descriptor instead.
 func (*ValidateAccessResponse) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{48}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *ValidateAccessResponse) GetAllowed() bool {
@@ -2668,7 +3224,7 @@ type ActivateUserPayload struct {
 
 func (x *ActivateUserPayload) Reset() {
 	*x = ActivateUserPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[49]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2680,7 +3236,7 @@ func (x *ActivateUserPayload) String() string {
 func (*ActivateUserPayload) ProtoMessage() {}
 
 func (x *ActivateUserPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[49]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2693,7 +3249,7 @@ func (x *ActivateUserPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActivateUserPayload.ProtoReflect.Descriptor instead.
 func (*ActivateUserPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{49}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *ActivateUserPayload) GetActivationToken() string {
@@ -2712,7 +3268,7 @@ type ResendActivationPayload struct {
 
 func (x *ResendActivationPayload) Reset() {
 	*x = ResendActivationPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[50]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2724,7 +3280,7 @@ func (x *ResendActivationPayload) String() string {
 func (*ResendActivationPayload) ProtoMessage() {}
 
 func (x *ResendActivationPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[50]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2737,7 +3293,7 @@ func (x *ResendActivationPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResendActivationPayload.ProtoReflect.Descriptor instead.
 func (*ResendActivationPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{50}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *ResendActivationPayload) GetIdentifier() string {
@@ -2756,7 +3312,7 @@ type ForgotPasswordPayload struct {
 
 func (x *ForgotPasswordPayload) Reset() {
 	*x = ForgotPasswordPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[51]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2768,7 +3324,7 @@ func (x *ForgotPasswordPayload) String() string {
 func (*ForgotPasswordPayload) ProtoMessage() {}
 
 func (x *ForgotPasswordPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[51]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2781,7 +3337,7 @@ func (x *ForgotPasswordPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ForgotPasswordPayload.ProtoReflect.Descriptor instead.
 func (*ForgotPasswordPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{51}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *ForgotPasswordPayload) GetIdentifier() string {
@@ -2801,7 +3357,7 @@ type ResetPasswordPayload struct {
 
 func (x *ResetPasswordPayload) Reset() {
 	*x = ResetPasswordPayload{}
-	mi := &file_common_proto_auth_auth_proto_msgTypes[52]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2813,7 +3369,7 @@ func (x *ResetPasswordPayload) String() string {
 func (*ResetPasswordPayload) ProtoMessage() {}
 
 func (x *ResetPasswordPayload) ProtoReflect() protoreflect.Message {
-	mi := &file_common_proto_auth_auth_proto_msgTypes[52]
+	mi := &file_common_proto_auth_auth_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2826,7 +3382,7 @@ func (x *ResetPasswordPayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResetPasswordPayload.ProtoReflect.Descriptor instead.
 func (*ResetPasswordPayload) Descriptor() ([]byte, []int) {
-	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{52}
+	return file_common_proto_auth_auth_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *ResetPasswordPayload) GetPasswordResetToken() string {
@@ -3004,7 +3560,30 @@ const file_common_proto_auth_auth_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"J\n" +
 	"\x14GetUserRolesResponse\x122\n" +
 	"\n" +
-	"user_roles\x18\x01 \x03(\v2\x13.authProto.UserRoleR\tuserRoles\"K\n" +
+	"user_roles\x18\x01 \x03(\v2\x13.authProto.UserRoleR\tuserRoles\"`\n" +
+	"\x1eAssignPermissionsToRolePayload\x12\x17\n" +
+	"\arole_id\x18\x01 \x01(\tR\x06roleId\x12%\n" +
+	"\x0epermission_ids\x18\x02 \x03(\tR\rpermissionIds\"K\n" +
+	"\x17AssignRoleToUserPayload\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x17\n" +
+	"\arole_id\x18\x02 \x01(\tR\x06roleId\"_\n" +
+	"\x1fRemovePermissionFromRolePayload\x12\x17\n" +
+	"\arole_id\x18\x01 \x01(\tR\x06roleId\x12#\n" +
+	"\rpermission_id\x18\x02 \x01(\tR\fpermissionId\"M\n" +
+	"\x19RemoveRoleFromUserPayload\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x17\n" +
+	"\arole_id\x18\x02 \x01(\tR\x06roleId\"4\n" +
+	"\x19GetRolePermissionsPayload\x12\x17\n" +
+	"\arole_id\x18\x01 \x01(\tR\x06roleId\"U\n" +
+	"\x1aGetRolePermissionsResponse\x127\n" +
+	"\vpermissions\x18\x01 \x03(\v2\x15.authProto.PermissionR\vpermissions\"e\n" +
+	"\x16CheckPermissionRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1a\n" +
+	"\bresource\x18\x02 \x01(\tR\bresource\x12\x16\n" +
+	"\x06action\x18\x03 \x01(\tR\x06action\"M\n" +
+	"\x17CheckPermissionResponse\x12\x18\n" +
+	"\aallowed\x18\x01 \x01(\bR\aallowed\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"K\n" +
 	"\x13RevokeAccessRequest\x12\x16\n" +
 	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x1c\n" +
 	"\tcompanyId\x18\x02 \x01(\tR\tcompanyId\"0\n" +
@@ -3024,6 +3603,16 @@ const file_common_proto_auth_auth_proto_rawDesc = "" +
 	"\x14DeleteCompanyPayload\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"1\n" +
 	"\x15DeleteCompanyResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"U\n" +
+	"\x19GrantCompanyAccessPayload\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1f\n" +
+	"\vcompany_ids\x18\x02 \x03(\tR\n" +
+	"companyIds\"V\n" +
+	"\x1aRevokeCompanyAccessPayload\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1f\n" +
+	"\vcompany_ids\x18\x02 \x03(\tR\n" +
+	"companyIds\"7\n" +
+	"\x1bRevokeCompanyAccessResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"=\n" +
 	"\x18VerifyAccessTokenPayload\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\"@\n" +
@@ -3050,7 +3639,7 @@ const file_common_proto_auth_auth_proto_rawDesc = "" +
 	"identifier\"m\n" +
 	"\x14ResetPasswordPayload\x120\n" +
 	"\x14password_reset_token\x18\x01 \x01(\tR\x12passwordResetToken\x12#\n" +
-	"\rpassword_hash\x18\x02 \x01(\tR\fpasswordHash2\x82\x0e\n" +
+	"\rpassword_hash\x18\x02 \x01(\tR\fpasswordHash2\x9d\x14\n" +
 	"\vAuthService\x12?\n" +
 	"\fRegisterUser\x12\x1e.authProto.UserRegisterPayload\x1a\x0f.authProto.User\x12F\n" +
 	"\tLoginUser\x12\x1b.authProto.LoginUserPayload\x1a\x1c.authProto.LoginUserResponse\x12B\n" +
@@ -3069,7 +3658,7 @@ const file_common_proto_auth_auth_proto_rawDesc = "" +
 	"\fRegisterRole\x12\x1e.authProto.RoleRegisterPayload\x1a\x0f.authProto.Role\x127\n" +
 	"\bGetRoles\x12\x16.google.protobuf.Empty\x1a\x13.authProto.RoleList\x12M\n" +
 	"\x13GetRoleByIdentifier\x12%.authProto.GetRoleByIdentifierPayload\x1a\x0f.authProto.Role\x12=\n" +
-	"\vGetRoleById\x12\x1d.authProto.GetRoleByIdPayload\x1a\x0f.authProto.Role\x12B\n" +
+	"\vGetRoleByID\x12\x1d.authProto.GetRoleByIdPayload\x1a\x0f.authProto.Role\x12B\n" +
 	"\n" +
 	"UpdateRole\x12\x1c.authProto.UpdateRolePayload\x1a\x16.google.protobuf.Empty\x12B\n" +
 	"\n" +
@@ -3081,7 +3670,16 @@ const file_common_proto_auth_auth_proto_rawDesc = "" +
 	"\rUpdateCompany\x12!.authProto.CompanyRegisterPayload\x1a\x12.authProto.Company\x12H\n" +
 	"\rDeleteCompany\x12\x1f.authProto.DeleteCompanyPayload\x1a\x16.google.protobuf.Empty\x12J\n" +
 	"\x0eForgotPassword\x12 .authProto.ForgotPasswordPayload\x1a\x16.google.protobuf.Empty\x12H\n" +
-	"\rResetPassword\x12\x1f.authProto.ResetPasswordPayload\x1a\x16.google.protobuf.EmptyB\x16Z\x14auth/proto;authProtob\x06proto3"
+	"\rResetPassword\x12\x1f.authProto.ResetPasswordPayload\x1a\x16.google.protobuf.Empty\x12K\n" +
+	"\x12GrantCompanyAccess\x12$.authProto.GrantCompanyAccessPayload\x1a\x0f.authProto.User\x12M\n" +
+	"\x13RevokeCompanyAccess\x12%.authProto.RevokeCompanyAccessPayload\x1a\x0f.authProto.User\x12\\\n" +
+	"\x17AssignPermissionsToRole\x12).authProto.AssignPermissionsToRolePayload\x1a\x16.google.protobuf.Empty\x12G\n" +
+	"\x10AssignRoleToUser\x12\".authProto.AssignRoleToUserPayload\x1a\x0f.authProto.User\x12^\n" +
+	"\x18RemovePermissionFromRole\x12*.authProto.RemovePermissionFromRolePayload\x1a\x16.google.protobuf.Empty\x12R\n" +
+	"\x12RemoveRoleFromUser\x12$.authProto.RemoveRoleFromUserPayload\x1a\x16.google.protobuf.Empty\x12a\n" +
+	"\x12GetRolePermissions\x12$.authProto.GetRolePermissionsPayload\x1a%.authProto.GetRolePermissionsResponse\x12a\n" +
+	"\x12GetUserPermissions\x12$.authProto.GetUserPermissionsPayload\x1a%.authProto.GetUserPermissionsResponse\x12\\\n" +
+	"\x13CheckUserPermission\x12!.authProto.CheckPermissionRequest\x1a\".authProto.CheckPermissionResponseB\x16Z\x14auth/proto;authProtob\x06proto3"
 
 var (
 	file_common_proto_auth_auth_proto_rawDescOnce sync.Once
@@ -3095,79 +3693,90 @@ func file_common_proto_auth_auth_proto_rawDescGZIP() []byte {
 	return file_common_proto_auth_auth_proto_rawDescData
 }
 
-var file_common_proto_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 53)
+var file_common_proto_auth_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 64)
 var file_common_proto_auth_auth_proto_goTypes = []any{
-	(*User)(nil),                          // 0: authProto.User
-	(*UserRole)(nil),                      // 1: authProto.UserRole
-	(*RolePermission)(nil),                // 2: authProto.RolePermission
-	(*Permission)(nil),                    // 3: authProto.Permission
-	(*PermissionList)(nil),                // 4: authProto.PermissionList
-	(*RolePermissionList)(nil),            // 5: authProto.RolePermissionList
-	(*Company)(nil),                       // 6: authProto.Company
-	(*CompanyList)(nil),                   // 7: authProto.CompanyList
-	(*CompanyPermission)(nil),             // 8: authProto.CompanyPermission
-	(*Role)(nil),                          // 9: authProto.Role
-	(*RoleList)(nil),                      // 10: authProto.RoleList
-	(*GetByIDPayload)(nil),                // 11: authProto.GetByIDPayload
-	(*UserRegisterPayload)(nil),           // 12: authProto.UserRegisterPayload
-	(*LoginUserPayload)(nil),              // 13: authProto.LoginUserPayload
-	(*LoginUserResponse)(nil),             // 14: authProto.LoginUserResponse
-	(*LogoutUserPayload)(nil),             // 15: authProto.LogoutUserPayload
-	(*GetUserByIdentifierPayload)(nil),    // 16: authProto.GetUserByIdentifierPayload
-	(*GetUserByIdPayload)(nil),            // 17: authProto.GetUserByIdPayload
-	(*GetUserResponse)(nil),               // 18: authProto.GetUserResponse
-	(*UpdateUserPayload)(nil),             // 19: authProto.UpdateUserPayload
-	(*DeleteUserPayload)(nil),             // 20: authProto.DeleteUserPayload
-	(*DeleteUserResponse)(nil),            // 21: authProto.DeleteUserResponse
-	(*RoleRegisterPayload)(nil),           // 22: authProto.RoleRegisterPayload
-	(*GetRoleByIdentifierPayload)(nil),    // 23: authProto.GetRoleByIdentifierPayload
-	(*GetRoleByIdPayload)(nil),            // 24: authProto.GetRoleByIdPayload
-	(*GetRoleResponse)(nil),               // 25: authProto.GetRoleResponse
-	(*UpdateRolePayload)(nil),             // 26: authProto.UpdateRolePayload
-	(*DeleteRolePayload)(nil),             // 27: authProto.DeleteRolePayload
-	(*DeleteRoleResponse)(nil),            // 28: authProto.DeleteRoleResponse
-	(*AssignRolePayload)(nil),             // 29: authProto.AssignRolePayload
-	(*SetCustomPermissionsPayload)(nil),   // 30: authProto.SetCustomPermissionsPayload
-	(*SetCustomPermissionsResponse)(nil),  // 31: authProto.SetCustomPermissionsResponse
-	(*GetUserPermissionsPayload)(nil),     // 32: authProto.GetUserPermissionsPayload
-	(*GetUserPermissionsResponse)(nil),    // 33: authProto.GetUserPermissionsResponse
-	(*GetUserRolePayload)(nil),            // 34: authProto.GetUserRolePayload
-	(*GetUserRolesPayload)(nil),           // 35: authProto.GetUserRolesPayload
-	(*GetUserRolesResponse)(nil),          // 36: authProto.GetUserRolesResponse
-	(*RevokeAccessRequest)(nil),           // 37: authProto.RevokeAccessRequest
-	(*RevokeAccessResponse)(nil),          // 38: authProto.RevokeAccessResponse
-	(*CompanyRegisterPayload)(nil),        // 39: authProto.CompanyRegisterPayload
-	(*GetCompanyByIdentifierPayload)(nil), // 40: authProto.GetCompanyByIdentifierPayload
-	(*GetCompanyByIDPayload)(nil),         // 41: authProto.GetCompanyByIDPayload
-	(*GetCompanyResponse)(nil),            // 42: authProto.GetCompanyResponse
-	(*DeleteCompanyPayload)(nil),          // 43: authProto.DeleteCompanyPayload
-	(*DeleteCompanyResponse)(nil),         // 44: authProto.DeleteCompanyResponse
-	(*VerifyAccessTokenPayload)(nil),      // 45: authProto.VerifyAccessTokenPayload
-	(*RefreshAccessTokenPayload)(nil),     // 46: authProto.RefreshAccessTokenPayload
-	(*ValidateAccessRequest)(nil),         // 47: authProto.ValidateAccessRequest
-	(*ValidateAccessResponse)(nil),        // 48: authProto.ValidateAccessResponse
-	(*ActivateUserPayload)(nil),           // 49: authProto.ActivateUserPayload
-	(*ResendActivationPayload)(nil),       // 50: authProto.ResendActivationPayload
-	(*ForgotPasswordPayload)(nil),         // 51: authProto.ForgotPasswordPayload
-	(*ResetPasswordPayload)(nil),          // 52: authProto.ResetPasswordPayload
-	(*timestamppb.Timestamp)(nil),         // 53: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                 // 54: google.protobuf.Empty
+	(*User)(nil),                            // 0: authProto.User
+	(*UserRole)(nil),                        // 1: authProto.UserRole
+	(*RolePermission)(nil),                  // 2: authProto.RolePermission
+	(*Permission)(nil),                      // 3: authProto.Permission
+	(*PermissionList)(nil),                  // 4: authProto.PermissionList
+	(*RolePermissionList)(nil),              // 5: authProto.RolePermissionList
+	(*Company)(nil),                         // 6: authProto.Company
+	(*CompanyList)(nil),                     // 7: authProto.CompanyList
+	(*CompanyPermission)(nil),               // 8: authProto.CompanyPermission
+	(*Role)(nil),                            // 9: authProto.Role
+	(*RoleList)(nil),                        // 10: authProto.RoleList
+	(*GetByIDPayload)(nil),                  // 11: authProto.GetByIDPayload
+	(*UserRegisterPayload)(nil),             // 12: authProto.UserRegisterPayload
+	(*LoginUserPayload)(nil),                // 13: authProto.LoginUserPayload
+	(*LoginUserResponse)(nil),               // 14: authProto.LoginUserResponse
+	(*LogoutUserPayload)(nil),               // 15: authProto.LogoutUserPayload
+	(*GetUserByIdentifierPayload)(nil),      // 16: authProto.GetUserByIdentifierPayload
+	(*GetUserByIdPayload)(nil),              // 17: authProto.GetUserByIdPayload
+	(*GetUserResponse)(nil),                 // 18: authProto.GetUserResponse
+	(*UpdateUserPayload)(nil),               // 19: authProto.UpdateUserPayload
+	(*DeleteUserPayload)(nil),               // 20: authProto.DeleteUserPayload
+	(*DeleteUserResponse)(nil),              // 21: authProto.DeleteUserResponse
+	(*RoleRegisterPayload)(nil),             // 22: authProto.RoleRegisterPayload
+	(*GetRoleByIdentifierPayload)(nil),      // 23: authProto.GetRoleByIdentifierPayload
+	(*GetRoleByIdPayload)(nil),              // 24: authProto.GetRoleByIdPayload
+	(*GetRoleResponse)(nil),                 // 25: authProto.GetRoleResponse
+	(*UpdateRolePayload)(nil),               // 26: authProto.UpdateRolePayload
+	(*DeleteRolePayload)(nil),               // 27: authProto.DeleteRolePayload
+	(*DeleteRoleResponse)(nil),              // 28: authProto.DeleteRoleResponse
+	(*AssignRolePayload)(nil),               // 29: authProto.AssignRolePayload
+	(*SetCustomPermissionsPayload)(nil),     // 30: authProto.SetCustomPermissionsPayload
+	(*SetCustomPermissionsResponse)(nil),    // 31: authProto.SetCustomPermissionsResponse
+	(*GetUserPermissionsPayload)(nil),       // 32: authProto.GetUserPermissionsPayload
+	(*GetUserPermissionsResponse)(nil),      // 33: authProto.GetUserPermissionsResponse
+	(*GetUserRolePayload)(nil),              // 34: authProto.GetUserRolePayload
+	(*GetUserRolesPayload)(nil),             // 35: authProto.GetUserRolesPayload
+	(*GetUserRolesResponse)(nil),            // 36: authProto.GetUserRolesResponse
+	(*AssignPermissionsToRolePayload)(nil),  // 37: authProto.AssignPermissionsToRolePayload
+	(*AssignRoleToUserPayload)(nil),         // 38: authProto.AssignRoleToUserPayload
+	(*RemovePermissionFromRolePayload)(nil), // 39: authProto.RemovePermissionFromRolePayload
+	(*RemoveRoleFromUserPayload)(nil),       // 40: authProto.RemoveRoleFromUserPayload
+	(*GetRolePermissionsPayload)(nil),       // 41: authProto.GetRolePermissionsPayload
+	(*GetRolePermissionsResponse)(nil),      // 42: authProto.GetRolePermissionsResponse
+	(*CheckPermissionRequest)(nil),          // 43: authProto.CheckPermissionRequest
+	(*CheckPermissionResponse)(nil),         // 44: authProto.CheckPermissionResponse
+	(*RevokeAccessRequest)(nil),             // 45: authProto.RevokeAccessRequest
+	(*RevokeAccessResponse)(nil),            // 46: authProto.RevokeAccessResponse
+	(*CompanyRegisterPayload)(nil),          // 47: authProto.CompanyRegisterPayload
+	(*GetCompanyByIdentifierPayload)(nil),   // 48: authProto.GetCompanyByIdentifierPayload
+	(*GetCompanyByIDPayload)(nil),           // 49: authProto.GetCompanyByIDPayload
+	(*GetCompanyResponse)(nil),              // 50: authProto.GetCompanyResponse
+	(*DeleteCompanyPayload)(nil),            // 51: authProto.DeleteCompanyPayload
+	(*DeleteCompanyResponse)(nil),           // 52: authProto.DeleteCompanyResponse
+	(*GrantCompanyAccessPayload)(nil),       // 53: authProto.GrantCompanyAccessPayload
+	(*RevokeCompanyAccessPayload)(nil),      // 54: authProto.RevokeCompanyAccessPayload
+	(*RevokeCompanyAccessResponse)(nil),     // 55: authProto.RevokeCompanyAccessResponse
+	(*VerifyAccessTokenPayload)(nil),        // 56: authProto.VerifyAccessTokenPayload
+	(*RefreshAccessTokenPayload)(nil),       // 57: authProto.RefreshAccessTokenPayload
+	(*ValidateAccessRequest)(nil),           // 58: authProto.ValidateAccessRequest
+	(*ValidateAccessResponse)(nil),          // 59: authProto.ValidateAccessResponse
+	(*ActivateUserPayload)(nil),             // 60: authProto.ActivateUserPayload
+	(*ResendActivationPayload)(nil),         // 61: authProto.ResendActivationPayload
+	(*ForgotPasswordPayload)(nil),           // 62: authProto.ForgotPasswordPayload
+	(*ResetPasswordPayload)(nil),            // 63: authProto.ResetPasswordPayload
+	(*timestamppb.Timestamp)(nil),           // 64: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                   // 65: google.protobuf.Empty
 }
 var file_common_proto_auth_auth_proto_depIdxs = []int32{
-	53, // 0: authProto.User.created_at:type_name -> google.protobuf.Timestamp
-	53, // 1: authProto.User.updated_at:type_name -> google.protobuf.Timestamp
-	53, // 2: authProto.UserRole.created_at:type_name -> google.protobuf.Timestamp
-	53, // 3: authProto.UserRole.updated_at:type_name -> google.protobuf.Timestamp
-	53, // 4: authProto.RolePermission.created_at:type_name -> google.protobuf.Timestamp
-	53, // 5: authProto.RolePermission.updated_at:type_name -> google.protobuf.Timestamp
+	64, // 0: authProto.User.created_at:type_name -> google.protobuf.Timestamp
+	64, // 1: authProto.User.updated_at:type_name -> google.protobuf.Timestamp
+	64, // 2: authProto.UserRole.created_at:type_name -> google.protobuf.Timestamp
+	64, // 3: authProto.UserRole.updated_at:type_name -> google.protobuf.Timestamp
+	64, // 4: authProto.RolePermission.created_at:type_name -> google.protobuf.Timestamp
+	64, // 5: authProto.RolePermission.updated_at:type_name -> google.protobuf.Timestamp
 	3,  // 6: authProto.PermissionList.permissions:type_name -> authProto.Permission
 	2,  // 7: authProto.RolePermissionList.role_permissions:type_name -> authProto.RolePermission
-	53, // 8: authProto.Company.created_at:type_name -> google.protobuf.Timestamp
-	53, // 9: authProto.Company.updated_at:type_name -> google.protobuf.Timestamp
+	64, // 8: authProto.Company.created_at:type_name -> google.protobuf.Timestamp
+	64, // 9: authProto.Company.updated_at:type_name -> google.protobuf.Timestamp
 	6,  // 10: authProto.CompanyList.companies:type_name -> authProto.Company
 	3,  // 11: authProto.CompanyPermission.permissions:type_name -> authProto.Permission
-	53, // 12: authProto.Role.created_at:type_name -> google.protobuf.Timestamp
-	53, // 13: authProto.Role.updated_at:type_name -> google.protobuf.Timestamp
+	64, // 12: authProto.Role.created_at:type_name -> google.protobuf.Timestamp
+	64, // 13: authProto.Role.updated_at:type_name -> google.protobuf.Timestamp
 	9,  // 14: authProto.RoleList.roles:type_name -> authProto.Role
 	0,  // 15: authProto.LoginUserResponse.user:type_name -> authProto.User
 	0,  // 16: authProto.GetUserResponse.user:type_name -> authProto.User
@@ -3177,62 +3786,81 @@ var file_common_proto_auth_auth_proto_depIdxs = []int32{
 	3,  // 20: authProto.SetCustomPermissionsPayload.permissions:type_name -> authProto.Permission
 	3,  // 21: authProto.GetUserPermissionsResponse.permissions:type_name -> authProto.Permission
 	1,  // 22: authProto.GetUserRolesResponse.user_roles:type_name -> authProto.UserRole
-	6,  // 23: authProto.GetCompanyResponse.company:type_name -> authProto.Company
-	12, // 24: authProto.AuthService.RegisterUser:input_type -> authProto.UserRegisterPayload
-	13, // 25: authProto.AuthService.LoginUser:input_type -> authProto.LoginUserPayload
-	15, // 26: authProto.AuthService.LogoutUser:input_type -> authProto.LogoutUserPayload
-	16, // 27: authProto.AuthService.GetUserByIdentifier:input_type -> authProto.GetUserByIdentifierPayload
-	17, // 28: authProto.AuthService.GetUserById:input_type -> authProto.GetUserByIdPayload
-	19, // 29: authProto.AuthService.UpdateUser:input_type -> authProto.UpdateUserPayload
-	20, // 30: authProto.AuthService.DeleteUser:input_type -> authProto.DeleteUserPayload
-	45, // 31: authProto.AuthService.VerifyAccessToken:input_type -> authProto.VerifyAccessTokenPayload
-	46, // 32: authProto.AuthService.RefreshAccessToken:input_type -> authProto.RefreshAccessTokenPayload
-	49, // 33: authProto.AuthService.ActivateUser:input_type -> authProto.ActivateUserPayload
-	50, // 34: authProto.AuthService.ResendActivation:input_type -> authProto.ResendActivationPayload
-	22, // 35: authProto.AuthService.RegisterRole:input_type -> authProto.RoleRegisterPayload
-	54, // 36: authProto.AuthService.GetRoles:input_type -> google.protobuf.Empty
-	23, // 37: authProto.AuthService.GetRoleByIdentifier:input_type -> authProto.GetRoleByIdentifierPayload
-	24, // 38: authProto.AuthService.GetRoleById:input_type -> authProto.GetRoleByIdPayload
-	26, // 39: authProto.AuthService.UpdateRole:input_type -> authProto.UpdateRolePayload
-	27, // 40: authProto.AuthService.DeleteRole:input_type -> authProto.DeleteRolePayload
-	39, // 41: authProto.AuthService.RegisterCompany:input_type -> authProto.CompanyRegisterPayload
-	40, // 42: authProto.AuthService.GetCompanyByIdentifier:input_type -> authProto.GetCompanyByIdentifierPayload
-	41, // 43: authProto.AuthService.GetCompanyByID:input_type -> authProto.GetCompanyByIDPayload
-	54, // 44: authProto.AuthService.GetAllCompany:input_type -> google.protobuf.Empty
-	39, // 45: authProto.AuthService.UpdateCompany:input_type -> authProto.CompanyRegisterPayload
-	43, // 46: authProto.AuthService.DeleteCompany:input_type -> authProto.DeleteCompanyPayload
-	51, // 47: authProto.AuthService.ForgotPassword:input_type -> authProto.ForgotPasswordPayload
-	52, // 48: authProto.AuthService.ResetPassword:input_type -> authProto.ResetPasswordPayload
-	0,  // 49: authProto.AuthService.RegisterUser:output_type -> authProto.User
-	14, // 50: authProto.AuthService.LoginUser:output_type -> authProto.LoginUserResponse
-	54, // 51: authProto.AuthService.LogoutUser:output_type -> google.protobuf.Empty
-	0,  // 52: authProto.AuthService.GetUserByIdentifier:output_type -> authProto.User
-	0,  // 53: authProto.AuthService.GetUserById:output_type -> authProto.User
-	0,  // 54: authProto.AuthService.UpdateUser:output_type -> authProto.User
-	21, // 55: authProto.AuthService.DeleteUser:output_type -> authProto.DeleteUserResponse
-	0,  // 56: authProto.AuthService.VerifyAccessToken:output_type -> authProto.User
-	14, // 57: authProto.AuthService.RefreshAccessToken:output_type -> authProto.LoginUserResponse
-	0,  // 58: authProto.AuthService.ActivateUser:output_type -> authProto.User
-	0,  // 59: authProto.AuthService.ResendActivation:output_type -> authProto.User
-	9,  // 60: authProto.AuthService.RegisterRole:output_type -> authProto.Role
-	10, // 61: authProto.AuthService.GetRoles:output_type -> authProto.RoleList
-	9,  // 62: authProto.AuthService.GetRoleByIdentifier:output_type -> authProto.Role
-	9,  // 63: authProto.AuthService.GetRoleById:output_type -> authProto.Role
-	54, // 64: authProto.AuthService.UpdateRole:output_type -> google.protobuf.Empty
-	54, // 65: authProto.AuthService.DeleteRole:output_type -> google.protobuf.Empty
-	6,  // 66: authProto.AuthService.RegisterCompany:output_type -> authProto.Company
-	6,  // 67: authProto.AuthService.GetCompanyByIdentifier:output_type -> authProto.Company
-	6,  // 68: authProto.AuthService.GetCompanyByID:output_type -> authProto.Company
-	7,  // 69: authProto.AuthService.GetAllCompany:output_type -> authProto.CompanyList
-	6,  // 70: authProto.AuthService.UpdateCompany:output_type -> authProto.Company
-	54, // 71: authProto.AuthService.DeleteCompany:output_type -> google.protobuf.Empty
-	54, // 72: authProto.AuthService.ForgotPassword:output_type -> google.protobuf.Empty
-	54, // 73: authProto.AuthService.ResetPassword:output_type -> google.protobuf.Empty
-	49, // [49:74] is the sub-list for method output_type
-	24, // [24:49] is the sub-list for method input_type
-	24, // [24:24] is the sub-list for extension type_name
-	24, // [24:24] is the sub-list for extension extendee
-	0,  // [0:24] is the sub-list for field type_name
+	3,  // 23: authProto.GetRolePermissionsResponse.permissions:type_name -> authProto.Permission
+	6,  // 24: authProto.GetCompanyResponse.company:type_name -> authProto.Company
+	12, // 25: authProto.AuthService.RegisterUser:input_type -> authProto.UserRegisterPayload
+	13, // 26: authProto.AuthService.LoginUser:input_type -> authProto.LoginUserPayload
+	15, // 27: authProto.AuthService.LogoutUser:input_type -> authProto.LogoutUserPayload
+	16, // 28: authProto.AuthService.GetUserByIdentifier:input_type -> authProto.GetUserByIdentifierPayload
+	17, // 29: authProto.AuthService.GetUserById:input_type -> authProto.GetUserByIdPayload
+	19, // 30: authProto.AuthService.UpdateUser:input_type -> authProto.UpdateUserPayload
+	20, // 31: authProto.AuthService.DeleteUser:input_type -> authProto.DeleteUserPayload
+	56, // 32: authProto.AuthService.VerifyAccessToken:input_type -> authProto.VerifyAccessTokenPayload
+	57, // 33: authProto.AuthService.RefreshAccessToken:input_type -> authProto.RefreshAccessTokenPayload
+	60, // 34: authProto.AuthService.ActivateUser:input_type -> authProto.ActivateUserPayload
+	61, // 35: authProto.AuthService.ResendActivation:input_type -> authProto.ResendActivationPayload
+	22, // 36: authProto.AuthService.RegisterRole:input_type -> authProto.RoleRegisterPayload
+	65, // 37: authProto.AuthService.GetRoles:input_type -> google.protobuf.Empty
+	23, // 38: authProto.AuthService.GetRoleByIdentifier:input_type -> authProto.GetRoleByIdentifierPayload
+	24, // 39: authProto.AuthService.GetRoleByID:input_type -> authProto.GetRoleByIdPayload
+	26, // 40: authProto.AuthService.UpdateRole:input_type -> authProto.UpdateRolePayload
+	27, // 41: authProto.AuthService.DeleteRole:input_type -> authProto.DeleteRolePayload
+	47, // 42: authProto.AuthService.RegisterCompany:input_type -> authProto.CompanyRegisterPayload
+	48, // 43: authProto.AuthService.GetCompanyByIdentifier:input_type -> authProto.GetCompanyByIdentifierPayload
+	49, // 44: authProto.AuthService.GetCompanyByID:input_type -> authProto.GetCompanyByIDPayload
+	65, // 45: authProto.AuthService.GetAllCompany:input_type -> google.protobuf.Empty
+	47, // 46: authProto.AuthService.UpdateCompany:input_type -> authProto.CompanyRegisterPayload
+	51, // 47: authProto.AuthService.DeleteCompany:input_type -> authProto.DeleteCompanyPayload
+	62, // 48: authProto.AuthService.ForgotPassword:input_type -> authProto.ForgotPasswordPayload
+	63, // 49: authProto.AuthService.ResetPassword:input_type -> authProto.ResetPasswordPayload
+	53, // 50: authProto.AuthService.GrantCompanyAccess:input_type -> authProto.GrantCompanyAccessPayload
+	54, // 51: authProto.AuthService.RevokeCompanyAccess:input_type -> authProto.RevokeCompanyAccessPayload
+	37, // 52: authProto.AuthService.AssignPermissionsToRole:input_type -> authProto.AssignPermissionsToRolePayload
+	38, // 53: authProto.AuthService.AssignRoleToUser:input_type -> authProto.AssignRoleToUserPayload
+	39, // 54: authProto.AuthService.RemovePermissionFromRole:input_type -> authProto.RemovePermissionFromRolePayload
+	40, // 55: authProto.AuthService.RemoveRoleFromUser:input_type -> authProto.RemoveRoleFromUserPayload
+	41, // 56: authProto.AuthService.GetRolePermissions:input_type -> authProto.GetRolePermissionsPayload
+	32, // 57: authProto.AuthService.GetUserPermissions:input_type -> authProto.GetUserPermissionsPayload
+	43, // 58: authProto.AuthService.CheckUserPermission:input_type -> authProto.CheckPermissionRequest
+	0,  // 59: authProto.AuthService.RegisterUser:output_type -> authProto.User
+	14, // 60: authProto.AuthService.LoginUser:output_type -> authProto.LoginUserResponse
+	65, // 61: authProto.AuthService.LogoutUser:output_type -> google.protobuf.Empty
+	0,  // 62: authProto.AuthService.GetUserByIdentifier:output_type -> authProto.User
+	0,  // 63: authProto.AuthService.GetUserById:output_type -> authProto.User
+	0,  // 64: authProto.AuthService.UpdateUser:output_type -> authProto.User
+	21, // 65: authProto.AuthService.DeleteUser:output_type -> authProto.DeleteUserResponse
+	0,  // 66: authProto.AuthService.VerifyAccessToken:output_type -> authProto.User
+	14, // 67: authProto.AuthService.RefreshAccessToken:output_type -> authProto.LoginUserResponse
+	0,  // 68: authProto.AuthService.ActivateUser:output_type -> authProto.User
+	0,  // 69: authProto.AuthService.ResendActivation:output_type -> authProto.User
+	9,  // 70: authProto.AuthService.RegisterRole:output_type -> authProto.Role
+	10, // 71: authProto.AuthService.GetRoles:output_type -> authProto.RoleList
+	9,  // 72: authProto.AuthService.GetRoleByIdentifier:output_type -> authProto.Role
+	9,  // 73: authProto.AuthService.GetRoleByID:output_type -> authProto.Role
+	65, // 74: authProto.AuthService.UpdateRole:output_type -> google.protobuf.Empty
+	65, // 75: authProto.AuthService.DeleteRole:output_type -> google.protobuf.Empty
+	6,  // 76: authProto.AuthService.RegisterCompany:output_type -> authProto.Company
+	6,  // 77: authProto.AuthService.GetCompanyByIdentifier:output_type -> authProto.Company
+	6,  // 78: authProto.AuthService.GetCompanyByID:output_type -> authProto.Company
+	7,  // 79: authProto.AuthService.GetAllCompany:output_type -> authProto.CompanyList
+	6,  // 80: authProto.AuthService.UpdateCompany:output_type -> authProto.Company
+	65, // 81: authProto.AuthService.DeleteCompany:output_type -> google.protobuf.Empty
+	65, // 82: authProto.AuthService.ForgotPassword:output_type -> google.protobuf.Empty
+	65, // 83: authProto.AuthService.ResetPassword:output_type -> google.protobuf.Empty
+	0,  // 84: authProto.AuthService.GrantCompanyAccess:output_type -> authProto.User
+	0,  // 85: authProto.AuthService.RevokeCompanyAccess:output_type -> authProto.User
+	65, // 86: authProto.AuthService.AssignPermissionsToRole:output_type -> google.protobuf.Empty
+	0,  // 87: authProto.AuthService.AssignRoleToUser:output_type -> authProto.User
+	65, // 88: authProto.AuthService.RemovePermissionFromRole:output_type -> google.protobuf.Empty
+	65, // 89: authProto.AuthService.RemoveRoleFromUser:output_type -> google.protobuf.Empty
+	42, // 90: authProto.AuthService.GetRolePermissions:output_type -> authProto.GetRolePermissionsResponse
+	33, // 91: authProto.AuthService.GetUserPermissions:output_type -> authProto.GetUserPermissionsResponse
+	44, // 92: authProto.AuthService.CheckUserPermission:output_type -> authProto.CheckPermissionResponse
+	59, // [59:93] is the sub-list for method output_type
+	25, // [25:59] is the sub-list for method input_type
+	25, // [25:25] is the sub-list for extension type_name
+	25, // [25:25] is the sub-list for extension extendee
+	0,  // [0:25] is the sub-list for field type_name
 }
 
 func init() { file_common_proto_auth_auth_proto_init() }
@@ -3246,7 +3874,7 @@ func file_common_proto_auth_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_common_proto_auth_auth_proto_rawDesc), len(file_common_proto_auth_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   53,
+			NumMessages:   64,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

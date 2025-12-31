@@ -161,3 +161,12 @@ type ApplyPermissionTemplateResponse struct {
 	Message     string             `json:"message"`
 	Permissions []types.Permission `json:"permissions"`
 }
+
+// Bulk Permission Assignment
+type AssignPermissionsToRoleRequest struct {
+	PermissionIDs []string `json:"permissionIds" binding:"required"`
+}
+
+type AssignPermissionsToRoleResponse struct {
+	Message string `json:"message"`
+}

@@ -30,6 +30,7 @@ var (
 //   - SetProductPriceID(ctx context.Context, productID string, brandID string, priceID string) error: This method is used to set product price ID.
 type ProductStore interface {
 	CreateProduct(ctx context.Context, product *Product) (string, error)
+	GetProductByID(ctx context.Context, productID string) (*Product, error)
 	GetProductByIDAndCompanyID(ctx context.Context, productID string, companyID string) (*Product, error)
 	UpdateProduct(ctx context.Context, productID string, companyID string, product *Product) error
 	ListProductsByCompanyID(ctx context.Context, companyID string, limit int64, offset int64) (*ListProductsResponse, error)
@@ -58,6 +59,43 @@ func NewProductStore(adapter mongoDatabase.MongoDBAdapter) ProductStore {
 	return &productStore{
 		productsCollection: adapter.Collection(COLLECTION_PRODUCTS),
 	}
+}
+
+// GetProductByID method.
+// This method is used to get a product by ID.
+//
+// Parameters:
+//   - ctx (context.Context): The context.
+//   - productID (string): The product ID.
+//
+// Returns:
+//   - *Product: The product.
+//   - error: An error if occurred.
+func (store *productStore) GetProductByID(ctx context.Context, productID string) (*Product, error) {
+	tracer := otel.Tracer("product-service")
+	ctx, span := tracer.Start(ctx, "productStore.GetProductByID")
+	defer span.End()
+
+	objectID, err := primitive.ObjectIDFromHex(productID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	filter := map[string]interface{}{
+		"_id": objectID,
+	}
+
+	product := &Product{}
+	err = store.productsCollection.FindOne(ctx, filter).Decode(product)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	return product, nil
 }
 
 // CreateProduct method.

@@ -34,7 +34,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/api/v1/ping"]
+            test: [ "CMD", "curl", "-f", "http://localhost:8080/api/v1/ping" ]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -70,7 +70,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50051"]
+            test: [ "CMD", "/bin/grpc_health_probe", "-addr=localhost:50051" ]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -102,7 +102,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50051"]
+            test: [ "CMD", "/bin/grpc_health_probe", "-addr=localhost:50051" ]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -132,7 +132,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50052"]
+            test: [ "CMD", "/bin/grpc_health_probe", "-addr=localhost:50052" ]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -166,7 +166,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50051"]
+            test: [ "CMD", "/bin/grpc_health_probe", "-addr=localhost:50051" ]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -196,7 +196,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50051"]
+            test: [ "CMD", "/bin/grpc_health_probe", "-addr=localhost:50051" ]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -226,7 +226,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:50052"]
+            test: [ "CMD", "/bin/grpc_health_probe", "-addr=localhost:50052" ]
             interval: 30s
             timeout: 5s
             retries: 3
@@ -251,7 +251,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "redis-cli", "ping"]
+            test: [ "CMD", "redis-cli", "ping" ]
             interval: 1m30s
             timeout: 30s
             retries: 5
@@ -269,7 +269,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "wget", "--spider", "-q", "http://localhost:8025"]
+            test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8025" ]
             interval: 1m30s
             timeout: 30s
             retries: 5
@@ -287,7 +287,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test: ["CMD", "rabbitmqctl", "status"]
+            test: [ "CMD", "rabbitmqctl", "status" ]
             interval: 1m30s
             timeout: 30s
             retries: 5
@@ -305,7 +305,7 @@ services:
             - oms-network
 
         healthcheck:
-            test: ["CMD", "wget", "--spider", "-q", "http://localhost:16686"]
+            test: [ "CMD", "wget", "--spider", "-q", "http://localhost:16686" ]
             interval: 1m30s
             timeout: 30s
             retries: 5
@@ -321,8 +321,7 @@ services:
         networks:
             - oms-network
         healthcheck:
-            test:
-                ["CMD", "curl", "-X", "GET", "localhost:8500/v1/status/leader"]
+            test: [ "CMD", "curl", "-X", "GET", "localhost:8500/v1/status/leader" ]
             interval: 1m30s
             timeout: 30s
             retries: 5
@@ -357,6 +356,17 @@ services:
             timeout: 30s
             retries: 5
             start_period: 30s
+
+    ui-service:
+        build:
+            context: .
+            dockerfile: ./compose/ui.dockerfile
+        image: ui-service:latest
+        container_name: ui-service
+        ports:
+            - 80:80
+        networks:
+            - oms-network
 
 networks:
     oms-network:

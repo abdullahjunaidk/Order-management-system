@@ -45,6 +45,7 @@ func AuthRoutes(router *gin.RouterGroup, registry *consulDiscovery.ConsulRegistr
 	authRouter.POST("/forgot-password", authController.ForgotPassword)
 	authRouter.POST("/reset-password/:passwordResetToken", authController.ResetPassword)
 	authRouter.POST("/refresh-access-token", authController.RefreshAccessToken)
+	authRouter.GET("/user/:userId", authController.GetUserByID)
 
 	// Admin
 	authRouter.POST("/admin/login", authController.LoginAdmin)
@@ -56,4 +57,15 @@ func AuthRoutes(router *gin.RouterGroup, registry *consulDiscovery.ConsulRegistr
 	authAdmin.POST("/role/register", authController.RegisterRole)
 	authAdmin.GET("/role/:roleId", authController.GetRoleByID)
 	authAdmin.GET("/roles", authController.GetRoles)
+	authAdmin.POST("/grant-company-access", authController.GrantCompanyAccess)
+
+	// Enhanced RBAC
+	authAdmin.PUT("/role/:roleId", authController.UpdateRole)
+	authAdmin.POST("/role/:roleId/permissions", authController.AssignPermissionsToRole)
+	authAdmin.DELETE("/role/:roleId/permissions/:permissionId", authController.RemovePermissionFromRole)
+	authAdmin.GET("/role/:roleId/permissions", authController.GetRolePermissions)
+
+	authAdmin.POST("/user/assign-role", authController.AssignRoleToUser)
+	authAdmin.DELETE("/user/:userId/role/:roleId", authController.RemoveRoleFromUser)
+	authAdmin.GET("/user/:userId/permissions", authController.GetUserPermissions)
 }

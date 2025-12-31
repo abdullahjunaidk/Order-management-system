@@ -71,12 +71,23 @@ type AuthService interface {
 	ResetPassword(ctx context.Context, passwordResetToken string, newPasswordHash string) error
 	LoginUser(ctx context.Context, identifier, password string) (*UserLoginResponse, error)
 	LogoutUser(ctx context.Context, identifier string) error
+	GrantCompanyAccess(ctx context.Context, payload GrantCompanyAccessPayload) (*User, error)
 
 	// Role
 	RegisterRole(ctx context.Context, name, description string) (*Role, error)
 	GetRoleByID(ctx context.Context, roleID string) (*Role, error)
 	GetRoleByIdentifier(ctx context.Context, identifier string) (*Role, error)
 	GetAllRole(ctx context.Context) ([]Role, error)
+	UpdateRole(ctx context.Context, roleID, name, description string) (*Role, error)
+
+	// Enhanced RBAC Methods
+	AssignPermissionsToRole(ctx context.Context, roleID string, permissionIDs []string) error
+	AssignRoleToUser(ctx context.Context, userID, roleID string) (*User, error)
+	RemovePermissionFromRole(ctx context.Context, roleID, permissionID string) error
+	RemoveRoleFromUser(ctx context.Context, userID, roleID string) error
+	GetRolePermissions(ctx context.Context, roleID string) ([]Permission, error)
+	GetUserPermissions(ctx context.Context, userID string) ([]Permission, error)
+	CheckUserPermission(ctx context.Context, userID, resource, action string) (bool, error)
 
 	// Token
 	VerifyAccessToken(ctx context.Context, accessToken string) (*User, error)
@@ -524,6 +535,65 @@ func (s *authService) LogoutUser(ctx context.Context, identifier string) error {
 	return nil
 }
 
+// GrantCompanyAccess method.
+// This method is used to grant a user access to selected companies.
+// Admin validation is handled by the gateway service.
+//
+// Parameters:
+//   - ctx (context.Context): The context.
+//   - payload (GrantCompanyAccessPayload): The grant company access payload.
+//
+// Returns:
+//   - *User: The updated user.
+//   - error: The error.
+func (s *authService) GrantCompanyAccess(ctx context.Context, payload GrantCompanyAccessPayload) (*User, error) {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authService.GrantCompanyAccess")
+	defer span.End()
+
+	// Validate all company IDs exist
+	for _, companyID := range payload.CompanyIDs {
+		_, err := s.store.GetCompanyByID(ctx, companyID)
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(otlpcodes.Error, err.Error())
+			return nil, errors.New("invalid company ID: " + companyID)
+		}
+	}
+
+	// Get the target user
+	user, err := s.store.GetUserByID(ctx, payload.UserID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	// Add company IDs to user's access list (avoiding duplicates)
+	existingCompanyIDs := make(map[string]bool)
+	for _, id := range user.CompanyIDs {
+		existingCompanyIDs[id] = true
+	}
+
+	for _, companyID := range payload.CompanyIDs {
+		if !existingCompanyIDs[companyID] {
+			user.CompanyIDs = append(user.CompanyIDs, companyID)
+		}
+	}
+
+	user.UpdatedAt = time.Now()
+
+	// Update user in database
+	if err := s.store.UpdateUser(ctx, user.ID.Hex(), user); err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Company Access Granted Successfully!")
+	return user, nil
+}
+
 // VerifyAccessToken method.
 // This method is used to verify the access token.
 //
@@ -812,3 +882,296 @@ func (s *authService) GetAllRole(ctx context.Context) ([]Role, error) {
 // 	span.SetStatus(otlpcodes.Ok, "Activation Email Resent Successfully!")
 // 	return user, nil
 // }
+
+// Enhanced RBAC Methods
+
+// UpdateRole updates a role's name and description
+func (s *authService) UpdateRole(ctx context.Context, roleID, name, description string) (*Role, error) {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authService.UpdateRole")
+	defer span.End()
+
+	// Get existing role
+	role, err := s.store.GetRoleByID(ctx, roleID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	// Update fields
+	role.Name = name
+	role.Description = description
+	role.UpdatedAt = time.Now()
+
+	// Save to database
+	if err := s.store.UpdateRole(ctx, roleID, role); err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Role Updated Successfully!")
+	return role, nil
+}
+
+// AssignPermissionsToRole assigns multiple permissions to a role
+func (s *authService) AssignPermissionsToRole(ctx context.Context, roleID string, permissionIDs []string) error {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authService.AssignPermissionsToRole")
+	defer span.End()
+
+	// Validate role exists
+	_, err := s.store.GetRoleByID(ctx, roleID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "role not found")
+		return errors.New("role not found")
+	}
+
+	// Validate all permissions exist
+	for _, permID := range permissionIDs {
+		_, err := s.store.GetPermissionByID(ctx, permID)
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(otlpcodes.Error, "permission not found: "+permID)
+			return errors.New("permission not found: " + permID)
+		}
+	}
+
+	// Assign permissions
+	if err := s.store.AssignPermissionsToRole(ctx, roleID, permissionIDs); err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permissions Assigned to Role Successfully!")
+	return nil
+}
+
+// AssignRoleToUser assigns a role to a user
+func (s *authService) AssignRoleToUser(ctx context.Context, userID, roleID string) (*User, error) {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authService.AssignRoleToUser")
+	defer span.End()
+
+	// Validate user exists
+	user, err := s.store.GetUserByID(ctx, userID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "user not found")
+		return nil, errors.New("user not found")
+	}
+
+	// Validate role exists
+	_, err = s.store.GetRoleByID(ctx, roleID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "role not found")
+		return nil, errors.New("role not found")
+	}
+
+	// Check if role already assigned
+	existingUserRoles, err := s.store.GetUserRolesByUserID(ctx, userID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	for _, ur := range existingUserRoles {
+		if ur.RoleID == roleID {
+			span.SetStatus(otlpcodes.Ok, "Role already assigned to user")
+			return user, nil
+		}
+	}
+
+	// Assign role
+	if err := s.store.RegisterUserRole(ctx, userID, roleID); err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Role Assigned to User Successfully!")
+	return user, nil
+}
+
+// RemovePermissionFromRole removes a permission from a role
+func (s *authService) RemovePermissionFromRole(ctx context.Context, roleID, permissionID string) error {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authService.RemovePermissionFromRole")
+	defer span.End()
+
+	// Validate role exists
+	_, err := s.store.GetRoleByID(ctx, roleID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "role not found")
+		return errors.New("role not found")
+	}
+
+	// Validate permission exists
+	_, err = s.store.GetPermissionByID(ctx, permissionID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "permission not found")
+		return errors.New("permission not found")
+	}
+
+	// Remove permission
+	if err := s.store.RemovePermissionFromRole(ctx, roleID, permissionID); err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permission Removed from Role Successfully!")
+	return nil
+}
+
+// RemoveRoleFromUser removes a role from a user
+func (s *authService) RemoveRoleFromUser(ctx context.Context, userID, roleID string) error {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authService.RemoveRoleFromUser")
+	defer span.End()
+
+	// Validate user exists
+	_, err := s.store.GetUserByID(ctx, userID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "user not found")
+		return errors.New("user not found")
+	}
+
+	// Validate role exists
+	_, err = s.store.GetRoleByID(ctx, roleID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "role not found")
+		return errors.New("role not found")
+	}
+
+	// Remove role
+	if err := s.store.RemoveRoleFromUser(ctx, userID, roleID); err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Role Removed from User Successfully!")
+	return nil
+}
+
+// GetRolePermissions retrieves all permissions for a specific role
+func (s *authService) GetRolePermissions(ctx context.Context, roleID string) ([]Permission, error) {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authService.GetRolePermissions")
+	defer span.End()
+
+	// Validate role exists
+	_, err := s.store.GetRoleByID(ctx, roleID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "role not found")
+		return nil, errors.New("role not found")
+	}
+
+	// Get permissions
+	permissions, err := s.store.GetPermissionsByRoleID(ctx, roleID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Role Permissions Retrieved Successfully!")
+	return permissions, nil
+}
+
+// GetUserPermissions retrieves all permissions for a user (merged from all their roles)
+func (s *authService) GetUserPermissions(ctx context.Context, userID string) ([]Permission, error) {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authService.GetUserPermissions")
+	defer span.End()
+
+	// Validate user exists
+	_, err := s.store.GetUserByID(ctx, userID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "user not found")
+		return nil, errors.New("user not found")
+	}
+
+	// Get all roles for the user
+	roles, err := s.store.GetRolesByUserID(ctx, userID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, err
+	}
+
+	// Collect all permissions from all roles
+	permissionMap := make(map[string]Permission)
+	for _, role := range roles {
+		permissions, err := s.store.GetPermissionsByRoleID(ctx, role.ID.Hex())
+		if err != nil {
+			continue // Skip roles with errors
+		}
+
+		for _, perm := range permissions {
+			permissionMap[perm.ID.Hex()] = perm
+		}
+	}
+
+	// Convert map to slice
+	var allPermissions []Permission
+	for _, perm := range permissionMap {
+		allPermissions = append(allPermissions, perm)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "User Permissions Retrieved Successfully!")
+	return allPermissions, nil
+}
+
+// CheckUserPermission checks if a user has a specific permission
+func (s *authService) CheckUserPermission(ctx context.Context, userID, resource, action string) (bool, error) {
+	tracer := otel.Tracer("auth-service")
+	ctx, span := tracer.Start(ctx, "authService.CheckUserPermission")
+	defer span.End()
+
+	// Get user to check if super admin
+	user, err := s.store.GetUserByID(ctx, userID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, "user not found")
+		return false, errors.New("user not found")
+	}
+
+	// Super admins have all permissions
+	if user.IsSuperAdmin {
+		span.SetStatus(otlpcodes.Ok, "Super admin has all permissions")
+		return true, nil
+	}
+
+	// Get all permissions for the user
+	permissions, err := s.GetUserPermissions(ctx, userID)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return false, err
+	}
+
+	// Check if the specific resource-action combination exists
+	for _, perm := range permissions {
+		// Check if permission name matches resource:action format
+		if perm.Name == resource+":"+action {
+			span.SetStatus(otlpcodes.Ok, "Permission found")
+			return true, nil
+		}
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permission not found")
+	return false, nil
+}

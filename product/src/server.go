@@ -150,6 +150,36 @@ func (s *productGRPCServer) GetProductByIDAndCompanyID(ctx context.Context, req 
 	}, nil
 }
 
+func (s *productGRPCServer) GetProductByID(ctx context.Context, req *productProto.GetProductByIDPayload) (*productProto.Product, error) {
+	tracer := otel.Tracer("product-service")
+	ctx, span := tracer.Start(ctx, "productGRPCServer.GetProductByID")
+	defer span.End()
+
+	s.log.WithFields(logrus.Fields{"id": req.Id}).Info("Getting Product...")
+
+	res, err := s.productService.GetProductByID(ctx, req.Id)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+
+		s.log.WithFields(logrus.Fields{"id": req.Id, "error": err}).Error("Failed to Get Product!")
+		return nil, err
+	}
+
+	s.log.WithFields(logrus.Fields{"id": req.Id}).Info("Product Found!")
+	return &productProto.Product{
+		Id:          res.ID.Hex(),
+		CompanyId:   res.CompanyID,
+		Name:        res.Name,
+		Description: res.Description,
+		Category:    res.Category,
+		Price:       res.Price,
+		PriceId:     res.PriceID,
+		CreatedAt:   timestamppb.New(res.CreatedAt),
+		UpdatedAt:   timestamppb.New(res.UpdatedAt),
+	}, nil
+}
+
 // UpdateProduct method.
 // This method is used to update a product.
 //

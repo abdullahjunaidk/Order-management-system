@@ -130,7 +130,7 @@ func (ac *AuthController) GetRoles(c *gin.Context) {
 	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.GetRoles")
 	defer span.End()
 
-	admin, exists := c.Get("employee")
+	admin, exists := c.Get("user")
 	if !exists {
 		ac.logger.WithFields(logrus.Fields{"error": "admin not found"}).Error("Failed to Get Roles!")
 
@@ -185,4 +185,177 @@ func (ac *AuthController) GetRoles(c *gin.Context) {
 
 	span.SetStatus(otlpcodes.Ok, "Roles Retrieved Successfully!")
 	c.JSON(http.StatusOK, roles)
+}
+
+func (ac *AuthController) UpdateRole(c *gin.Context) {
+	tracer := otel.Tracer("gateway-service")
+	ctx := c.Request.Context()
+	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.UpdateRole")
+	defer span.End()
+
+	roleId := c.Param("roleId")
+	if roleId == "" {
+		span.RecordError(errors.New("role id is required"))
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "Role ID is required"})
+		return
+	}
+
+	var req auth_models.UpdateRoleRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "Invalid request payload", Error: err.Error()})
+		return
+	}
+
+	if err := ac.client.UpdateRole(ctx, roleId, req.Name, req.Description); err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{Message: "Failed to update role", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, auth_models.UpdateRoleResponse{Message: "Role updated successfully"})
+}
+
+func (ac *AuthController) AssignPermissionsToRole(c *gin.Context) {
+	tracer := otel.Tracer("gateway-service")
+	ctx := c.Request.Context()
+	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.AssignPermissionsToRole")
+	defer span.End()
+
+	roleId := c.Param("roleId")
+	if roleId == "" {
+		span.RecordError(errors.New("role id is required"))
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "Role ID is required"})
+		return
+	}
+
+	var req auth_models.AssignPermissionsToRoleRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "Invalid request payload", Error: err.Error()})
+		return
+	}
+
+	if err := ac.client.AssignPermissionsToRole(ctx, roleId, req.PermissionIDs); err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{Message: "Failed to assign permissions", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, auth_models.AssignPermissionsToRoleResponse{Message: "Permissions assigned successfully"})
+}
+
+func (ac *AuthController) RemovePermissionFromRole(c *gin.Context) {
+	tracer := otel.Tracer("gateway-service")
+	ctx := c.Request.Context()
+	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.RemovePermissionFromRole")
+	defer span.End()
+
+	roleId := c.Param("roleId")
+	permissionId := c.Param("permissionId")
+	if roleId == "" || permissionId == "" {
+		span.RecordError(errors.New("role id and permission id are required"))
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "Role ID and Permission ID are required"})
+		return
+	}
+
+	if err := ac.client.RemovePermissionFromRole(ctx, roleId, permissionId); err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{Message: "Failed to remove permission", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Permission removed successfully"})
+}
+
+func (ac *AuthController) AssignRoleToUser(c *gin.Context) {
+	tracer := otel.Tracer("gateway-service")
+	ctx := c.Request.Context()
+	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.AssignRoleToUser")
+	defer span.End()
+
+	var req auth_models.UserRoleRegisterPayload
+	if err := c.ShouldBindJSON(&req); err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "Invalid request payload", Error: err.Error()})
+		return
+	}
+
+	_, err := ac.client.AssignRoleToUser(ctx, req.UserID, req.RoleID)
+	if err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{Message: "Failed to assign role to user", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Role assigned to user successfully"})
+}
+
+func (ac *AuthController) RemoveRoleFromUser(c *gin.Context) {
+	tracer := otel.Tracer("gateway-service")
+	ctx := c.Request.Context()
+	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.RemoveRoleFromUser")
+	defer span.End()
+
+	userId := c.Param("userId")
+	roleId := c.Param("roleId")
+	if userId == "" || roleId == "" {
+		span.RecordError(errors.New("user id and role id are required"))
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "User ID and Role ID are required"})
+		return
+	}
+
+	if err := ac.client.RemoveRoleFromUser(ctx, userId, roleId); err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{Message: "Failed to remove role from user", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Role removed from user successfully"})
+}
+
+func (ac *AuthController) GetRolePermissions(c *gin.Context) {
+	tracer := otel.Tracer("gateway-service")
+	ctx := c.Request.Context()
+	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.GetRolePermissions")
+	defer span.End()
+
+	roleId := c.Param("roleId")
+	if roleId == "" {
+		span.RecordError(errors.New("role id is required"))
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "Role ID is required"})
+		return
+	}
+
+	res, err := ac.client.GetRolePermissions(ctx, roleId)
+	if err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{Message: "Failed to get role permissions", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": res.Permissions})
+}
+
+func (ac *AuthController) GetUserPermissions(c *gin.Context) {
+	tracer := otel.Tracer("gateway-service")
+	ctx := c.Request.Context()
+	ctx, span := tracer.Start(ctx, "gatewayHTTPServer.GetUserPermissions")
+	defer span.End()
+
+	userId := c.Param("userId")
+	if userId == "" {
+		span.RecordError(errors.New("user id is required"))
+		c.JSON(http.StatusBadRequest, auth_models.ErrorResponse{Message: "User ID is required"})
+		return
+	}
+
+	res, err := ac.client.GetUserPermissions(ctx, userId)
+	if err != nil {
+		span.RecordError(err)
+		c.JSON(http.StatusInternalServerError, auth_models.ErrorResponse{Message: "Failed to get user permissions", Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": res.Permissions})
 }

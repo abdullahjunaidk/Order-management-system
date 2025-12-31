@@ -37,6 +37,10 @@ message GetProductByIDAndCompanyIDPayload {
     string company_id = 2;
 }
 
+message GetProductByIDPayload {
+    string id = 1;
+}
+
 // Product Update Models
 message ProductUpdatePayload {
     string id = 1;
@@ -78,6 +82,7 @@ message SetProductPriceIDPayload {
 service ProductService {
     rpc CreateProduct(ProductCreatePayload) returns (Product);
     rpc GetProductByIDAndCompanyID(GetProductByIDAndCompanyIDPayload) returns (Product);
+    rpc GetProductByID(GetProductByIDPayload) returns (Product);
     rpc UpdateProduct(ProductUpdatePayload) returns (Product);
     rpc ListProductsByCompanyID(ListProductsByCompanyIDPayload) returns (ListProductsResponse);
     rpc DeleteProduct(DeleteProductPayload) returns (google.protobuf.Empty);

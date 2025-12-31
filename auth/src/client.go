@@ -269,6 +269,7 @@ func (c *AuthClient) GetUserByID(ctx context.Context, userID string) (*authProto
 	defer cancel()
 
 	res, err := c.service.GetUserById(ctx, &authProto.GetUserByIdPayload{Id: userID})
+
 	if err != nil {
 		st, ok := status.FromError(err)
 		if ok {
@@ -704,7 +705,7 @@ func (c *AuthClient) GetRoleByID(ctx context.Context, roleID string) (*authProto
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	res, err := c.service.GetRoleById(ctx, &authProto.GetRoleByIdPayload{Id: roleID})
+	res, err := c.service.GetRoleByID(ctx, &authProto.GetRoleByIdPayload{Id: roleID})
 	if err != nil {
 		st, ok := status.FromError(err)
 		if ok {
@@ -793,4 +794,228 @@ func (c *AuthClient) GetRoles(ctx context.Context) (*authProto.RoleList, error) 
 
 	span.SetStatus(otlpcodes.Ok, "All Roles Retrieved Successfully Via GRPC!")
 	return res, nil
+}
+
+func (c *AuthClient) GrantCompanyAccess(ctx context.Context, userId string, companyIds []string) (*authProto.User, error) {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "authClient.GrantCompanyAccess")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	payload := authProto.GrantCompanyAccessPayload{
+		UserId:     userId,
+		CompanyIds: companyIds,
+	}
+
+	res, err := c.service.GrantCompanyAccess(ctx, &payload)
+	if err != nil {
+		st, ok := status.FromError(err)
+		if ok {
+			c.log.WithFields(logrus.Fields{"error": err, "grpc_code": st.Code(), "grpc_message": st.Message()}).Error("Failed to Grant Company Access!")
+
+			span.RecordError(err)
+			span.SetStatus(otlpcodes.Error, err.Error())
+			if st.Code() == codes.DeadlineExceeded {
+				return nil, fmt.Errorf("grant company access deadline exceeded: %w", err)
+			}
+
+			return nil, fmt.Errorf("failed to grant company access: %s", st.Message())
+		}
+		c.log.WithFields(logrus.Fields{"error": err}).Error("Failed to Grant Company Access!")
+
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, fmt.Errorf("failed to grant company access: %w", err)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Company Access Granted Successfully Via GRPC!")
+	return res, nil
+}
+
+// --- Enhanced RBAC Methods ---
+
+func (c *AuthClient) UpdateRole(ctx context.Context, roleID, name, description string) error {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "authClient.UpdateRole")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := c.service.UpdateRole(ctx, &authProto.UpdateRolePayload{
+		Id:          roleID,
+		Name:        name,
+		Description: description,
+	})
+	if err != nil {
+		c.log.WithFields(logrus.Fields{"role_id": roleID, "error": err}).Error("Failed to Update Role!")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return fmt.Errorf("failed to update role: %w", err)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Role Updated Successfully Via GRPC!")
+	return nil
+}
+
+func (c *AuthClient) AssignPermissionsToRole(ctx context.Context, roleID string, permissionIDs []string) error {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "authClient.AssignPermissionsToRole")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := c.service.AssignPermissionsToRole(ctx, &authProto.AssignPermissionsToRolePayload{
+		RoleId:        roleID,
+		PermissionIds: permissionIDs,
+	})
+	if err != nil {
+		c.log.WithFields(logrus.Fields{"role_id": roleID, "error": err}).Error("Failed to Assign Permissions!")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return fmt.Errorf("failed to assign permissions: %w", err)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permissions Assigned Successfully Via GRPC!")
+	return nil
+}
+
+func (c *AuthClient) AssignRoleToUser(ctx context.Context, userID, roleID string) (*authProto.User, error) {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "authClient.AssignRoleToUser")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	res, err := c.service.AssignRoleToUser(ctx, &authProto.AssignRoleToUserPayload{
+		UserId: userID,
+		RoleId: roleID,
+	})
+	if err != nil {
+		c.log.WithFields(logrus.Fields{"user_id": userID, "role_id": roleID, "error": err}).Error("Failed to Assign Role to User!")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, fmt.Errorf("failed to assign role to user: %w", err)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Role Assigned to User Successfully Via GRPC!")
+	return res, nil
+}
+
+func (c *AuthClient) RemovePermissionFromRole(ctx context.Context, roleID, permissionID string) error {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "authClient.RemovePermissionFromRole")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := c.service.RemovePermissionFromRole(ctx, &authProto.RemovePermissionFromRolePayload{
+		RoleId:       roleID,
+		PermissionId: permissionID,
+	})
+	if err != nil {
+		c.log.WithFields(logrus.Fields{"role_id": roleID, "permission_id": permissionID, "error": err}).Error("Failed to Remove Permission!")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return fmt.Errorf("failed to remove permission: %w", err)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permission Removed Successfully Via GRPC!")
+	return nil
+}
+
+func (c *AuthClient) RemoveRoleFromUser(ctx context.Context, userID, roleID string) error {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "authClient.RemoveRoleFromUser")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := c.service.RemoveRoleFromUser(ctx, &authProto.RemoveRoleFromUserPayload{
+		UserId: userID,
+		RoleId: roleID,
+	})
+	if err != nil {
+		c.log.WithFields(logrus.Fields{"user_id": userID, "role_id": roleID, "error": err}).Error("Failed to Remove Role from User!")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return fmt.Errorf("failed to remove role from user: %w", err)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Role Removed from User Successfully Via GRPC!")
+	return nil
+}
+
+func (c *AuthClient) GetRolePermissions(ctx context.Context, roleID string) (*authProto.GetRolePermissionsResponse, error) {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "authClient.GetRolePermissions")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	res, err := c.service.GetRolePermissions(ctx, &authProto.GetRolePermissionsPayload{
+		RoleId: roleID,
+	})
+	if err != nil {
+		c.log.WithFields(logrus.Fields{"role_id": roleID, "error": err}).Error("Failed to Get Role Permissions!")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, fmt.Errorf("failed to get role permissions: %w", err)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Role Permissions Retrieved Successfully Via GRPC!")
+	return res, nil
+}
+
+func (c *AuthClient) GetUserPermissions(ctx context.Context, userID string) (*authProto.GetUserPermissionsResponse, error) {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "authClient.GetUserPermissions")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	res, err := c.service.GetUserPermissions(ctx, &authProto.GetUserPermissionsPayload{
+		UserId: userID,
+	})
+	if err != nil {
+		c.log.WithFields(logrus.Fields{"user_id": userID, "error": err}).Error("Failed to Get User Permissions!")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return nil, fmt.Errorf("failed to get user permissions: %w", err)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "User Permissions Retrieved Successfully Via GRPC!")
+	return res, nil
+}
+
+func (c *AuthClient) CheckUserPermission(ctx context.Context, userID, resource, action string) (bool, error) {
+	tracer := otel.Tracer(c.tracerName)
+	ctx, span := tracer.Start(ctx, "authClient.CheckUserPermission")
+	defer span.End()
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	res, err := c.service.CheckUserPermission(ctx, &authProto.CheckPermissionRequest{
+		UserId:   userID,
+		Resource: resource,
+		Action:   action,
+	})
+	if err != nil {
+		c.log.WithFields(logrus.Fields{"user_id": userID, "error": err}).Error("Failed to Check Permission!")
+		span.RecordError(err)
+		span.SetStatus(otlpcodes.Error, err.Error())
+		return false, fmt.Errorf("failed to check permission: %w", err)
+	}
+
+	span.SetStatus(otlpcodes.Ok, "Permission Checked Successfully Via GRPC!")
+	return res.Allowed, nil
 }
